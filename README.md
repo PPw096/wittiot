@@ -13,6 +13,4 @@ async def main() -> None:
             api = Wittiot("10.255.172.105", session=session)
             res =await api._request_loc_allinfo()
             _LOGGER.info("_request_loc_allinfo==============: %s", res)
-        except EcowittError as err:
-            _LOGGER.error("There was an error: %s", err)
 ```
