@@ -2,13 +2,14 @@
 from ast import For
 import asyncio
 from datetime import date
+import enum
 from http.client import SWITCHING_PROTOCOLS
 import logging
 from typing import Any, Dict, List, Optional, cast
 
 from aiohttp import ClientSession, ClientTimeout
 from aiohttp.client_exceptions import ClientError
-
+import time
 import requests
 import json
 # from const import LOGGER,DEFAULT_API_VERSION
@@ -24,11 +25,263 @@ GW11268_API_UNIT = "get_units_info"
 GW11268_API_VER = "get_version"
 GW11268_API_SENID_1		 = "get_sensors_info?page=1"
 GW11268_API_SENID_2		 = "get_sensors_info?page=2"
+GW11268_API_SYS = "get_device_info"
+GW11268_API_MAC = "get_network_info"
 
 DEFAULT_LIMIT = 288
 DEFAULT_TIMEOUT = 10
 
+TYPE_TEMPINF = "tempinf"
+TYPE_HUMIDITYIN = "humidityin"
+TYPE_REL = "baromrelin"
+TYPE_ABS = "baromabsin"
+TYPE_TEMPOUT = "tempf"
+TYPE_HUMIOUT = "humidity"
+TYPE_WDIR = "winddir"
+TYPE_WS = "windspeedmph"
+TYPE_WG = "windgustmph"
+TYPE_SR = "solarradiation"
+TYPE_UV = "uv"
+TYPE_DWM = "daywindmax"
+TYPE_FEELLIKE = "feellike"
+TYPE_DEWP = "dewpoint"
+TYPE_RR = "rainratein"
+TYPE_ER = "eventrainin"
+TYPE_DR = "dailyrainin"
+TYPE_WR = "weeklyrainin"
+TYPE_MR = "monthlyrainin"
+TYPE_YR = "yearlyrainin"
+TYPE_PIEZO_RR = "rrain_piezo"
+TYPE_PIEZO_ER = "erain_piezo"
+TYPE_PIEZO_DR = "drain_piezo"
+TYPE_PIEZO_WR = "wrain_piezo"
+TYPE_PIEZO_MR = "mrain_piezo"
+TYPE_PIEZO_YR = "yrain_piezo"
+TYPE_PM25CH1 = "pm25_ch1"
+TYPE_PM25CH2 = "pm25_ch2"
+TYPE_PM25CH3 = "pm25_ch3"
+TYPE_PM25CH4 = "pm25_ch4"
+TYPE_PM25RTAQICH1 = "pm25_aqi_ch1"
+TYPE_PM25RTAQICH2 = "pm25_aqi_ch2"
+TYPE_PM25RTAQICH3 = "pm25_aqi_ch3"
+TYPE_PM25RTAQICH4 = "pm25_aqi_ch4"
+TYPE_PM2524HAQICH1 = "pm25_avg_24h_ch1"
+TYPE_PM2524HAQICH2 = "pm25_avg_24h_ch2"
+TYPE_PM2524HAQICH3 = "pm25_avg_24h_ch3"
+TYPE_PM2524HAQICH4 = "pm25_avg_24h_ch4"
+TYPE_CO2IN = "co2in"
+TYPE_CO224HIN = "co2in_24h"
+TYPE_CO2OUT = "co2"
+TYPE_CO224HOUT = "co2_24h"
+TYPE_CO2PM25 = "pm25_co2"
+TYPE_CO224HPM25 = "pm25_24h_co2"
+TYPE_CO2PM10 = "pm10_co2"
+TYPE_CO224HPM10 = "pm10_24h_co2"
+TYPE_CO2RTPM10 = "pm10_aqi_co2"
+TYPE_CO2RTPM25 = "pm25_aqi_co2"
+TYPE_CO2TEMP = "tf_co2"
+TYPE_CO2HUMI = "humi_co2"
+TYPE_LIGHTNING = "lightning"
+TYPE_LIGHTNINGTIME = "lightning_time"
+TYPE_LIGHTNINGNUM = "lightning_num"
+TYPE_LEAKCH1 = "leak_ch1"
+TYPE_LEAKCH2 = "leak_ch2"
+TYPE_LEAKCH3 = "leak_ch3"
+TYPE_LEAKCH4 = "leak_ch4"
+TYPE_TEMPCH1 = "temp_ch1"
+TYPE_TEMPCH2 = "temp_ch2"
+TYPE_TEMPCH3 = "temp_ch3"
+TYPE_TEMPCH4 = "temp_ch4"
+TYPE_TEMPCH5 = "temp_ch5"
+TYPE_TEMPCH6 = "temp_ch6"
+TYPE_TEMPCH7 = "temp_ch7"
+TYPE_TEMPCH8 = "temp_ch8"
+TYPE_HUMICH1 = "humidity_ch1"
+TYPE_HUMICH2 = "humidity_ch2"
+TYPE_HUMICH3 = "humidity_ch3"
+TYPE_HUMICH4 = "humidity_ch4"
+TYPE_HUMICH5 = "humidity_ch5"
+TYPE_HUMICH6 = "humidity_ch6"
+TYPE_HUMICH7 = "humidity_ch7"
+TYPE_HUMICH8 = "humidity_ch8"
+TYPE_SOILCH1 = "Soilmoisture_ch1"
+TYPE_SOILCH2 = "Soilmoisture_ch2"
+TYPE_SOILCH3 = "Soilmoisture_ch3"
+TYPE_SOILCH4 = "Soilmoisture_ch4"
+TYPE_SOILCH5 = "Soilmoisture_ch5"
+TYPE_SOILCH6 = "Soilmoisture_ch6"
+TYPE_SOILCH7 = "Soilmoisture_ch7"
+TYPE_SOILCH8 = "Soilmoisture_ch8"
+TYPE_ONLYTEMPCH1 = "tf_ch1"
+TYPE_ONLYTEMPCH2 = "tf_ch2"
+TYPE_ONLYTEMPCH3 = "tf_ch3"
+TYPE_ONLYTEMPCH4 = "tf_ch4"
+TYPE_ONLYTEMPCH5 = "tf_ch5"
+TYPE_ONLYTEMPCH6 = "tf_ch6"
+TYPE_ONLYTEMPCH7 = "tf_ch7"
+TYPE_ONLYTEMPCH8 = "tf_ch8"
+TYPE_LEAFCH1 = "leaf_ch1"
+TYPE_LEAFCH2 = "leaf_ch2"
+TYPE_LEAFCH3 = "leaf_ch3"
+TYPE_LEAFCH4 = "leaf_ch4"
+TYPE_LEAFCH5 = "leaf_ch5"
+TYPE_LEAFCH6 = "leaf_ch6"
+TYPE_LEAFCH7 = "leaf_ch7"
+TYPE_LEAFCH8 = "leaf_ch8"
 
+TYPE_PM25CH1_BATT = "pm25_ch1_batt"
+TYPE_PM25CH2_BATT = "pm25_ch2_batt"
+TYPE_PM25CH3_BATT = "pm25_ch3_batt"
+TYPE_PM25CH4_BATT = "pm25_ch4_batt"
+TYPE_LEAKCH1_BATT = "leak_ch1_batt"
+TYPE_LEAKCH2_BATT = "leak_ch2_batt"
+TYPE_LEAKCH3_BATT = "leak_ch3_batt"
+TYPE_LEAKCH4_BATT = "leak_ch4_batt"
+TYPE_TEMPCH1_BATT = "temph_ch1_batt"
+TYPE_TEMPCH2_BATT = "temph_ch2_batt"
+TYPE_TEMPCH3_BATT = "temph_ch3_batt"
+TYPE_TEMPCH4_BATT = "temph_ch4_batt"
+TYPE_TEMPCH5_BATT = "temph_ch5_batt"
+TYPE_TEMPCH6_BATT = "temph_ch6_batt"
+TYPE_TEMPCH7_BATT = "temph_ch7_batt"
+TYPE_TEMPCH8_BATT = "temph_ch8_batt"
+TYPE_SOILCH1_BATT = "Soilmoisture_ch1_batt"
+TYPE_SOILCH2_BATT = "Soilmoisture_ch2_batt"
+TYPE_SOILCH3_BATT = "Soilmoisture_ch3_batt"
+TYPE_SOILCH4_BATT = "Soilmoisture_ch4_batt"
+TYPE_SOILCH5_BATT = "Soilmoisture_ch5_batt"
+TYPE_SOILCH6_BATT = "Soilmoisture_ch6_batt"
+TYPE_SOILCH7_BATT = "Soilmoisture_ch7_batt"
+TYPE_SOILCH8_BATT = "Soilmoisture_ch8_batt"
+TYPE_ONLYTEMPCH1_BATT = "tf_ch1_batt"
+TYPE_ONLYTEMPCH2_BATT = "tf_ch2_batt"
+TYPE_ONLYTEMPCH3_BATT = "tf_ch3_batt"
+TYPE_ONLYTEMPCH4_BATT = "tf_ch4_batt"
+TYPE_ONLYTEMPCH5_BATT = "tf_ch5_batt"
+TYPE_ONLYTEMPCH6_BATT = "tf_ch6_batt"
+TYPE_ONLYTEMPCH7_BATT = "tf_ch7_batt"
+TYPE_ONLYTEMPCH8_BATT = "tf_ch8_batt"
+TYPE_LEAFCH1_BATT = "leaf_ch1_batt"
+TYPE_LEAFCH2_BATT = "leaf_ch2_batt"
+TYPE_LEAFCH3_BATT = "leaf_ch3_batt"
+TYPE_LEAFCH4_BATT = "leaf_ch4_batt"
+TYPE_LEAFCH5_BATT = "leaf_ch5_batt"
+TYPE_LEAFCH6_BATT = "leaf_ch6_batt"
+TYPE_LEAFCH7_BATT = "leaf_ch7_batt"
+TYPE_LEAFCH8_BATT = "leaf_ch8_batt"
+
+class WittiotDataTypes(enum.Enum):
+    """Wittiot Data types."""
+    TEMPERATURE=1
+    HUMIDITY = 2
+    PM25 = 3
+    AQI=4
+    LEAK = 5
+    BATTERY = 6
+
+
+
+class MultiSensorInfo:
+    """Multi Sensor Info."""
+
+    SENSOR_INFO={
+        TYPE_PM25CH1 : {"dev_type": "CH1 PM25","name":"CH1 PM2.5","data_type":WittiotDataTypes.PM25},
+        TYPE_PM25CH2 : {"dev_type": "CH2 PM25","name":"CH2 PM2.5","data_type":WittiotDataTypes.PM25},
+        TYPE_PM25CH3 : {"dev_type": "CH3 PM25","name":"CH3 PM2.5","data_type":WittiotDataTypes.PM25},
+        TYPE_PM25CH4 : {"dev_type": "CH4 PM25","name":"CH4 PM2.5","data_type":WittiotDataTypes.PM25},
+        TYPE_PM25RTAQICH1 : {"dev_type": "CH1 PM25","name":"CH1 PM2.5 AQI","data_type":WittiotDataTypes.AQI},
+        TYPE_PM25RTAQICH2 : {"dev_type": "CH2 PM25","name":"CH2 PM2.5 AQI","data_type":WittiotDataTypes.AQI},
+        TYPE_PM25RTAQICH3 : {"dev_type": "CH3 PM25","name":"CH3 PM2.5 AQI","data_type":WittiotDataTypes.AQI},
+        TYPE_PM25RTAQICH4 : {"dev_type": "CH4 PM25","name":"CH4 PM2.5 AQI","data_type":WittiotDataTypes.AQI},
+        TYPE_PM2524HAQICH1 : {"dev_type": "CH1 PM25","name":"CH1 PM2.5 24H AQI","data_type":WittiotDataTypes.AQI},
+        TYPE_PM2524HAQICH2 : {"dev_type": "CH2 PM25","name":"CH2 PM2.5 24H AQI","data_type":WittiotDataTypes.AQI},
+        TYPE_PM2524HAQICH3 : {"dev_type": "CH3 PM25","name":"CH3 PM2.5 24H AQI","data_type":WittiotDataTypes.AQI},
+        TYPE_PM2524HAQICH4 : {"dev_type": "CH4 PM25","name":"CH4 PM2.5 24H AQI","data_type":WittiotDataTypes.AQI},
+        TYPE_LEAKCH1 : {"dev_type": "CH1 LEAK","name":"CH1 LEAK","data_type":WittiotDataTypes.LEAK},
+        TYPE_LEAKCH2 : {"dev_type": "CH2 LEAK","name":"CH2 LEAK","data_type":WittiotDataTypes.LEAK},
+        TYPE_LEAKCH3 : {"dev_type": "CH3 LEAK","name":"CH3 LEAK","data_type":WittiotDataTypes.LEAK},
+        TYPE_LEAKCH4 : {"dev_type": "CH4 LEAK","name":"CH4 LEAK","data_type":WittiotDataTypes.LEAK},
+        TYPE_TEMPCH1 : {"dev_type": "CH1 T&H","name":"CH1 T&H Temp","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_TEMPCH2 : {"dev_type": "CH2 T&H","name":"CH2 T&H Temp","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_TEMPCH3 : {"dev_type": "CH3 T&H","name":"CH3 T&H Temp","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_TEMPCH4 : {"dev_type": "CH4 T&H","name":"CH4 T&H Temp","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_TEMPCH5 : {"dev_type": "CH5 T&H","name":"CH5 T&H Temp","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_TEMPCH6 : {"dev_type": "CH6 T&H","name":"CH6 T&H Temp","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_TEMPCH7 : {"dev_type": "CH7 T&H","name":"CH7 T&H Temp","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_TEMPCH8 : {"dev_type": "CH8 T&H","name":"CH8 T&H Temp","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_HUMICH1 : {"dev_type": "CH1 T&H","name":"CH1 T&H Humidity","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_HUMICH2 : {"dev_type": "CH2 T&H","name":"CH2 T&H Humidity","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_HUMICH3 : {"dev_type": "CH3 T&H","name":"CH3 T&H Humidity","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_HUMICH4 : {"dev_type": "CH4 T&H","name":"CH4 T&H Humidity","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_HUMICH5 : {"dev_type": "CH5 T&H","name":"CH5 T&H Humidity","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_HUMICH6 : {"dev_type": "CH6 T&H","name":"CH6 T&H Humidity","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_HUMICH7 : {"dev_type": "CH7 T&H","name":"CH7 T&H Humidity","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_HUMICH8 : {"dev_type": "CH8 T&H","name":"CH8 T&H Humidity","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_SOILCH1 : {"dev_type": "CH1 Soil","name":"CH1 Soil","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_SOILCH2 : {"dev_type": "CH2 Soil","name":"CH2 Soil","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_SOILCH3 : {"dev_type": "CH3 Soil","name":"CH3 Soil","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_SOILCH4 : {"dev_type": "CH4 Soil","name":"CH4 Soil","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_SOILCH5 : {"dev_type": "CH5 Soil","name":"CH5 Soil","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_SOILCH6 : {"dev_type": "CH6 Soil","name":"CH6 Soil","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_SOILCH7 : {"dev_type": "CH7 Soil","name":"CH7 Soil","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_SOILCH8 : {"dev_type": "CH8 Soil","name":"CH8 Soil","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_ONLYTEMPCH1 : {"dev_type": "CH1 Temp","name":"CH1 Temp","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_ONLYTEMPCH2 : {"dev_type": "CH2 Temp","name":"CH2 Temp","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_ONLYTEMPCH3 : {"dev_type": "CH3 Temp","name":"CH3 Temp","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_ONLYTEMPCH4 : {"dev_type": "CH4 Temp","name":"CH4 Temp","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_ONLYTEMPCH5 : {"dev_type": "CH5 Temp","name":"CH5 Temp","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_ONLYTEMPCH6 : {"dev_type": "CH6 Temp","name":"CH6 Temp","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_ONLYTEMPCH7 : {"dev_type": "CH7 Temp","name":"CH7 Temp","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_ONLYTEMPCH8 : {"dev_type": "CH8 Temp","name":"CH8 Temp","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_LEAFCH1 : {"dev_type": "CH1 Leaf","name":"CH1 Leaf","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_LEAFCH2 : {"dev_type": "CH2 Leaf","name":"CH2 Leaf","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_LEAFCH3 : {"dev_type": "CH3 Leaf","name":"CH3 Leaf","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_LEAFCH4 : {"dev_type": "CH4 Leaf","name":"CH4 Leaf","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_LEAFCH5 : {"dev_type": "CH5 Leaf","name":"CH5 Leaf","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_LEAFCH6 : {"dev_type": "CH6 Leaf","name":"CH6 Leaf","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_LEAFCH7 : {"dev_type": "CH7 Leaf","name":"CH7 Leaf","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_LEAFCH8 : {"dev_type": "CH8 Leaf","name":"CH8 Leaf","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_PM25CH1_BATT : {"dev_type": "CH1 PM25","name":"CH1 PM2.5 Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_PM25CH2_BATT : {"dev_type": "CH2 PM25","name":"CH2 PM2.5 Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_PM25CH3_BATT : {"dev_type": "CH3 PM25","name":"CH3 PM2.5 Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_PM25CH4_BATT : {"dev_type": "CH4 PM25","name":"CH4 PM2.5 Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_LEAKCH1_BATT : {"dev_type": "CH1 LEAK","name":"CH1 LEAK Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_LEAKCH2_BATT : {"dev_type": "CH2 LEAK","name":"CH2 LEAK Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_LEAKCH3_BATT : {"dev_type": "CH3 LEAK","name":"CH3 LEAK Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_LEAKCH4_BATT : {"dev_type": "CH4 LEAK","name":"CH4 LEAK Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_TEMPCH1_BATT : {"dev_type": "CH1 T&H","name":"CH1 T&H Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_TEMPCH2_BATT : {"dev_type": "CH2 T&H","name":"CH2 T&H Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_TEMPCH3_BATT : {"dev_type": "CH3 T&H","name":"CH3 T&H Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_TEMPCH4_BATT : {"dev_type": "CH4 T&H","name":"CH4 T&H Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_TEMPCH5_BATT : {"dev_type": "CH5 T&H","name":"CH5 T&H Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_TEMPCH6_BATT : {"dev_type": "CH6 T&H","name":"CH6 T&H Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_TEMPCH7_BATT : {"dev_type": "CH7 T&H","name":"CH7 T&H Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_TEMPCH8_BATT : {"dev_type": "CH8 T&H","name":"CH8 T&H Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_SOILCH1_BATT : {"dev_type": "CH1 Soil","name":"CH1 Soil Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_SOILCH2_BATT : {"dev_type": "CH2 Soil","name":"CH2 Soil Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_SOILCH3_BATT : {"dev_type": "CH3 Soil","name":"CH3 Soil Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_SOILCH4_BATT : {"dev_type": "CH4 Soil","name":"CH4 Soil Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_SOILCH5_BATT : {"dev_type": "CH5 Soil","name":"CH5 Soil Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_SOILCH6_BATT : {"dev_type": "CH6 Soil","name":"CH6 Soil Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_SOILCH7_BATT : {"dev_type": "CH7 Soil","name":"CH7 Soil Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_SOILCH8_BATT : {"dev_type": "CH8 Soil","name":"CH8 Soil Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_ONLYTEMPCH1_BATT : {"dev_type": "CH1 Temp","name":"CH1 Temp Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_ONLYTEMPCH2_BATT : {"dev_type": "CH2 Temp","name":"CH2 Temp Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_ONLYTEMPCH3_BATT : {"dev_type": "CH3 Temp","name":"CH3 Temp Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_ONLYTEMPCH4_BATT : {"dev_type": "CH4 Temp","name":"CH4 Temp Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_ONLYTEMPCH5_BATT : {"dev_type": "CH5 Temp","name":"CH5 Temp Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_ONLYTEMPCH6_BATT : {"dev_type": "CH6 Temp","name":"CH6 Temp Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_ONLYTEMPCH7_BATT : {"dev_type": "CH7 Temp","name":"CH7 Temp Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_ONLYTEMPCH8_BATT : {"dev_type": "CH8 Temp","name":"CH8 Temp Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_LEAFCH1_BATT : {"dev_type": "CH1 Leaf","name":"CH1 Leaf Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_LEAFCH2_BATT : {"dev_type": "CH2 Leaf","name":"CH2 Leaf Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_LEAFCH3_BATT : {"dev_type": "CH3 Leaf","name":"CH3 Leaf Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_LEAFCH4_BATT : {"dev_type": "CH4 Leaf","name":"CH4 Leaf Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_LEAFCH5_BATT : {"dev_type": "CH5 Leaf","name":"CH5 Leaf Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_LEAFCH6_BATT : {"dev_type": "CH6 Leaf","name":"CH6 Leaf Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_LEAFCH7_BATT : {"dev_type": "CH7 Leaf","name":"CH7 Leaf Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_LEAFCH8_BATT : {"dev_type": "CH8 Leaf","name":"CH8 Leaf Battery","data_type":WittiotDataTypes.BATTERY},
+    }
 
 class API:
     """Define the API object."""
@@ -73,23 +326,29 @@ class API:
                 await session.close()
         self._logger.debug("_request_data Received data for %s: %s", url, data)
         return cast(List[Dict[str, Any]], data)
-    
+
     async def _request_loc_batt1(self) -> List[Dict[str, Any]]:
         url = f"http://{self._ip}/{GW11268_API_SENID_1}"
         return await self._request_data(url)
-    
+
     async def _request_loc_batt2(self) -> List[Dict[str, Any]]:
         url = f"http://{self._ip}/{GW11268_API_SENID_2}"
         return await self._request_data(url)
-    
+
     async def _request_loc_data(self) -> List[Dict[str, Any]]:
         url = f"http://{self._ip}/{GW11268_API_LIVEDATA}"
         return await self._request_data(url)
-    
+
     async def _request_loc_info(self) -> List[Dict[str, Any]]:
         url = f"http://{self._ip}/{GW11268_API_VER}"
         return await self._request_data(url)
-    
+    async def _request_loc_sys(self) -> List[Dict[str, Any]]:
+        url = f"http://{self._ip}/{GW11268_API_SYS}"
+        return await self._request_data(url)
+    async def _request_loc_mac(self) -> List[Dict[str, Any]]:
+        url = f"http://{self._ip}/{GW11268_API_MAC}"
+        return await self._request_data(url)
+
     async def _request_loc_unit(self) -> List[Dict[str, Any]]:
         url = f"http://{self._ip}/{GW11268_API_UNIT}"
         return await self._request_data(url)
@@ -136,11 +395,11 @@ class API:
         val=val.replace("mmHg","")
         val=float(val)
         if unit=="0":
-            val=round((val/ 33.86388),2)  
+            val=round((val/ 33.86388),2)
         elif unit=="1":
             val
         else:
-            val=round((val*1.33322/ 33.86388),1)  
+            val=round((val*1.33322/ 33.86388),1)
         return val
     def locval_torain(self,val,unit):
         if val=="" or val =="--" or val =="--.-":
@@ -150,7 +409,7 @@ class API:
         val=val.replace("/Hr","")
         val=float(val)
         if unit=="0":
-            val=round((val/ 33.86388),2)  
+            val=round((val/ 33.86388),2)
         return val
     def locval_tosr(self,val,unit):
         if val=="" or val =="--" or val =="--.-":
@@ -160,11 +419,11 @@ class API:
         val=val.replace("Klux","")
         val=float(val)
         if unit=="0":
-            val=round(( val*1000/126.7 ),2)  
+            val=round(( val*1000/126.7 ),2)
         elif unit=="1":
             val
         else:
-            val=round(( val*1000*10.76391/126.7 ),2)  
+            val=round(( val*1000*10.76391/126.7 ),2)
         return val
     def locval_towind(self,val,unit):
         if val=="" or val =="--" or val =="--.-":
@@ -175,11 +434,11 @@ class API:
         val=val.replace("mph","")
         val=float(val)
         if unit=="0":
-            val=round(( val*2.236936 ),2)  
+            val=round(( val*2.236936 ),2)
         elif unit=="1":
-            val=round(( val/3.6 *2.236936 ),2) 
+            val=round(( val/3.6 *2.236936 ),2)
         elif unit=="2":
-            val=round(( val/1.943844*2.236936 ),2) 
+            val=round(( val/1.943844*2.236936 ),2)
         else:
             val
         return val
@@ -191,18 +450,31 @@ class API:
         val=val.replace("nmi","")
         val=float(val)
         if unit=="0":
-            val=round(( val* 0.62137 ),1)  
+            val=round(( val* 0.62137 ),1)
         elif unit=="1":
-            val=round(( val* 0.62137 ),1) 
+            val=round(( val* 0.62137 ),1)
         elif unit=="2":
             val
         else:
-            val=round(( val / 0.53996 * 0.62137 ),1) 
+            val=round(( val / 0.53996 * 0.62137 ),1)
         return val
     async def request_loc_allinfo(self,) -> List[Dict[str, Any]]:
         res=await self._request_loc_allinfo()
         return res
+    async def request_loc_info(self,) -> List[Dict[str, Any]]:
+        # res=await self._request_loc_info()
+        res_info = await self._request_loc_info()
+        res_sys = await self._request_loc_sys()
+        res_mac = await self._request_loc_mac()
+
+        resjson={
+            'version':res_info["version"][9:],
+            'dev_name':res_sys["apName"],
+            'mac':res_mac["mac"],
+        }
+        return resjson
     async def _request_loc_allinfo(self,) -> List[Dict[str, Any]]:
+        # time.sleep(15)
         ld_feellike= ''
         ld_dewpoint= ''
         ld_isid= ''
@@ -295,19 +567,21 @@ class API:
         res_unit = await self._request_loc_unit()
         res_batt1 = await self._request_loc_batt1()
         res_batt2 = await self._request_loc_batt2()
-        
+        res_sys = await self._request_loc_sys()
+        res_mac = await self._request_loc_mac()
+
         # print(res_data )
         # print(res_info )
         # print(res_unit )
         # print(res_batt1 )
         # print(res_batt2 )
-        
+
         unit_temp=res_unit["temperature"]
         unit_press=res_unit["pressure"]
         unit_wind=res_unit["wind"]
         unit_rain=res_unit["rain"]
         unit_light=res_unit["light"]
-        
+
         # res=(jsondata)
         # print("_request_loc_unit  : %s", res_data["common_list"])
         # if res["common_list"]:
@@ -333,9 +607,9 @@ class API:
                     ld_daywindmax=res_data["common_list"][index]["val"]
                 elif res_data["common_list"][index]["id"]=='3':
                     ld_feellike=res_data["common_list"][index]["val"]
-            
+
         if "rain" in res_data:
-            for index in range(len(res_data["rain"])):   
+            for index in range(len(res_data["rain"])):
                 if res_data["rain"][index]["id"]=='0x0D':
                     ra_event=res_data["rain"][index]["val"]
                 elif res_data["rain"][index]["id"]=='0x0E':
@@ -348,9 +622,9 @@ class API:
                     ra_month=res_data["rain"][index]["val"]
                 elif res_data["rain"][index]["id"]=='0x13':
                     ra_year=res_data["rain"][index]["val"]
-        
+
         if "piezoRain" in res_data:
-            for index in range(len(res_data["piezoRain"])):   
+            for index in range(len(res_data["piezoRain"])):
                 if res_data["rain"][index]["id"]=='0x0D':
                     piezora_event=res_data["rain"][index]["val"]
                 elif res_data["rain"][index]["id"]=='0x0E':
@@ -363,7 +637,7 @@ class API:
                     piezora_month=res_data["rain"][index]["val"]
                 elif res_data["rain"][index]["id"]=='0x13':
                     piezora_year=res_data["rain"][index]["val"]
-                
+
         if "wh25" in res_data:
             ld_intemp=res_data["wh25"][0]["intemp"]
             ld_inhumi=res_data["wh25"][0]["inhumi"]
@@ -373,12 +647,12 @@ class API:
                 ld_co2_co2_in=res_data["wh25"][0]["CO2"]
             if "CO2" in res_data["wh25"][0]:
                 ld_co2_co224_in=res_data["wh25"][0]["CO2_24H"]
-                
+
         if "lightning" in res_data:
             ld_lightning=res_data["lightning"][0]["distance"]
             ld_lightning_time=res_data["lightning"][0]["timestamp"]
             ld_lightning_power=res_data["lightning"][0]["count"]
-            
+
         if "co2" in res_data:
              ld_co2_tf=res_data["co2"][0]["temp"]
              ld_co2_humi=res_data["co2"][0]["humidity"]
@@ -390,9 +664,9 @@ class API:
              ld_co2_pm2524=res_data["co2"][0]["PM25_24HAQI"]
              ld_co2_co2=res_data["co2"][0]["CO2"]
              ld_co2_co224=res_data["co2"][0]["CO2_24H"]
-             
+
         if "ch_pm25" in res_data:
-            for index in range(len(res_data["ch_pm25"])):   
+            for index in range(len(res_data["ch_pm25"])):
                 if res_data["ch_pm25"][index]["channel"]=='1':
                     ld_pm25ch1=res_data["ch_pm25"][index]["PM25"]
                     ld_pm25ch1_AQI=res_data["ch_pm25"][index]["PM25_RealAQI"]
@@ -409,9 +683,9 @@ class API:
                     ld_pm25ch4=res_data["ch_pm25"][index]["PM25"]
                     ld_pm25ch4_AQI=res_data["ch_pm25"][index]["PM25_RealAQI"]
                     ld_pm25ch4_24AQI=res_data["ch_pm25"][index]["PM25_24HAQI"]
-                    
+
         if "ch_leak" in res_data:
-            for index in range(len(res_data["ch_leak"])):   
+            for index in range(len(res_data["ch_leak"])):
                 if res_data["ch_leak"][index]["channel"]=='1':
                     ld_leakch1=res_data["ch_leak"][index]["status"]
                 elif res_data["ch_leak"][index]["channel"]=='2':
@@ -420,64 +694,64 @@ class API:
                     ld_leakch3=res_data["ch_leak"][index]["status"]
                 elif res_data["ch_leak"][index]["channel"]=='4':
                     ld_leakch4=res_data["ch_leak"][index]["status"]
-               
+
         ld_soil=[]
         ld_tempch=[]
         ld_humich=[]
         ld_onlytempch=[]
-        ld_leafch=[]  
+        ld_leafch=[]
         for i in range(8):
             ld_soil.append("--")
             ld_tempch.append("--")
             ld_humich.append("--")
             ld_onlytempch.append("--")
             ld_leafch.append("--")
-        
+
         if "ch_aisle" in res_data:
             for index in range(len(res_data["ch_aisle"])):
                 ch=int(res_data["ch_aisle"][index]["channel"])-1
                 ld_tempch[ch]=self.locval_totemp(res_data["ch_aisle"][index]["temp"],unit_temp)
                 ld_humich[ch]=self.locval_tohumi(res_data["ch_aisle"][index]["humidity"])
-                  
+
         if "ch_soil" in res_data:
             for index in range(len(res_data["ch_soil"])):
                 ch=int(res_data["ch_soil"][index]["channel"])-1
                 ld_soil[ch]=self.locval_tohumi(res_data["ch_soil"][index]["humidity"])
-              
-                
+
+
         if "ch_temp" in res_data:
             for index in range(len(res_data["ch_temp"])):
                 ch=int(res_data["ch_temp"][index]["channel"])-1
                 ld_onlytempch[ch]=self.locval_totemp(res_data["ch_temp"][index]["temp"],unit_temp)
-                
-                
+
+
         if "ch_leaf" in res_data:
             for index in range(len(res_data["ch_leaf"])):
                 ch=int(res_data["ch_leaf"][index]["channel"])-1
                 ld_leafch[ch]=self.locval_tohumi(res_data["ch_leaf"][index]["humidity"])
-                
+
         ld_sen_batt=[]
         for i in range(58):
             ld_sen_batt.append("--")
-        
-        
+
+
         for index in range(len(res_batt1)):
             ch=int(res_batt1[index]["type"])
             ld_sen_batt[ch]=res_batt1[index]["batt"]
-            
+
         for index in range(len(res_batt2)):
             ch=int(res_batt2[index]["type"])
             ld_sen_batt[ch]=res_batt2[index]["batt"]
-        
-                
+
+
         ver=res_info["version"][9:]
-        
-        
-        
-       
-        
+        devname=res_sys["apName"]
+        mac=res_mac["mac"]
+
+
+
         # locval_totemp
-        # locval_tohumi       
+        # locval_tohumi
         # locval_topress
         # locval_torain
         # locval_tosr
@@ -488,7 +762,7 @@ class API:
         #     ld_humich[i]=self.locval_tohumi(ld_humich[i]),
         #     ld_onlytempch[i]=self.locval_totemp(ld_onlytempch[i],unit_temp),
         #     ld_leafch[i]=self.locval_tohumi(ld_leafch[i]),
-        
+
         resjson={
             "tempinf":self.locval_totemp(ld_intemp,unit_temp),
             "humidityin":self.locval_tohumi(ld_inhumi),
@@ -588,6 +862,8 @@ class API:
             "leaf_ch7":ld_leafch[6],
             "leaf_ch8":ld_leafch[7],
             "ver":ver,
+            "devname":devname,
+            "mac":mac,
             # "allbatt":ld_sen_batt,
             "pm25_ch1_batt":self.val_tobattery(ld_sen_batt[22],"","1"),
             "pm25_ch2_batt":self.val_tobattery(ld_sen_batt[23],"","1"),
@@ -629,20 +905,20 @@ class API:
             "leaf_ch6_batt":self.val_tobattery(ld_sen_batt[45],"","1"),
             "leaf_ch7_batt":self.val_tobattery(ld_sen_batt[46],"","1"),
             "leaf_ch8_batt":self.val_tobattery(ld_sen_batt[47],"","1"),
-            
+
         }
-        
+
         # batt pm25 index 22-25
         # batt leak index 27-30
         # batt t&h index 5-12
         # batt soil index 13-20
         # batt onlytemp index 30-37
         # batt leaf index 39-46
-               
-        # for x in resjson.items():  
+
+        # for x in resjson.items():
         #     print(x[0],x[1])
-                    
-        
+
+
         # print(ver )
         # print(resjson )
         return resjson
