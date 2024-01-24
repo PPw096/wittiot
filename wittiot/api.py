@@ -907,6 +907,11 @@ class API:
             "leaf_ch8_batt":self.val_tobattery(ld_sen_batt[47],"","1"),
 
         }
+        # 删除值为指定字符串的键值对
+        keys_to_remove = [key for key, val in list(resjson.items()) if val in ["None", "--", "", "--.-"]]
+
+        for key in keys_to_remove:
+            del resjson[key]
 
         # batt pm25 index 22-25
         # batt leak index 27-30
