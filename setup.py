@@ -5,10 +5,10 @@ with open("README.md", "r") as fh:
  
 setuptools.setup(
   name="wittiot",
-  version="1.0.6",
+  version="1.0.9",
   author="PPw096",
   author_email="1225835565@qq.com",
-  description="WittIOT Device support",
+  description="WSView Plus support",
   url='https://github.com/PPw096/wittiot',
   long_description=long_description,
   long_description_content_type="text/markdown",

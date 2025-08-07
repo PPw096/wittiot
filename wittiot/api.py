@@ -409,7 +409,7 @@ class API:
         val=val.replace("/Hr","")
         val=float(val)
         if unit=="0":
-            val=round((val/ 33.86388),2)
+            val=round((val/ 25.4),2)
         return val
     def locval_tosr(self,val,unit):
         if val=="" or val =="--" or val =="--.-":
@@ -625,18 +625,18 @@ class API:
 
         if "piezoRain" in res_data:
             for index in range(len(res_data["piezoRain"])):
-                if res_data["rain"][index]["id"]=='0x0D':
-                    piezora_event=res_data["rain"][index]["val"]
-                elif res_data["rain"][index]["id"]=='0x0E':
-                    piezora_rate=res_data["rain"][index]["val"]
-                elif res_data["rain"][index]["id"]=='0x10':
-                    piezora_daily=res_data["rain"][index]["val"]
-                elif res_data["rain"][index]["id"]=='0x11':
-                    piezora_weekly=res_data["rain"][index]["val"]
-                elif res_data["rain"][index]["id"]=='0x12':
-                    piezora_month=res_data["rain"][index]["val"]
-                elif res_data["rain"][index]["id"]=='0x13':
-                    piezora_year=res_data["rain"][index]["val"]
+                if res_data["piezoRain"][index]["id"]=='0x0D':
+                    piezora_event=res_data["piezoRain"][index]["val"]
+                elif res_data["piezoRain"][index]["id"]=='0x0E':
+                    piezora_rate=res_data["piezoRain"][index]["val"]
+                elif res_data["piezoRain"][index]["id"]=='0x10':
+                    piezora_daily=res_data["piezoRain"][index]["val"]
+                elif res_data["piezoRain"][index]["id"]=='0x11':
+                    piezora_weekly=res_data["piezoRain"][index]["val"]
+                elif res_data["piezoRain"][index]["id"]=='0x12':
+                    piezora_month=res_data["piezoRain"][index]["val"]
+                elif res_data["piezoRain"][index]["id"]=='0x13':
+                    piezora_year=res_data["piezoRain"][index]["val"]
 
         if "wh25" in res_data:
             ld_intemp=res_data["wh25"][0]["intemp"]
@@ -700,7 +700,7 @@ class API:
         ld_humich=[]
         ld_onlytempch=[]
         ld_leafch=[]
-        for i in range(8):
+        for i in range(16):
             ld_soil.append("--")
             ld_tempch.append("--")
             ld_humich.append("--")
@@ -731,7 +731,7 @@ class API:
                 ld_leafch[ch]=self.locval_tohumi(res_data["ch_leaf"][index]["humidity"])
 
         ld_sen_batt=[]
-        for i in range(58):
+        for i in range(99):
             ld_sen_batt.append("--")
 
 
