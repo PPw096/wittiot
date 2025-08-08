@@ -112,6 +112,14 @@ TYPE_SOILCH5 = "Soilmoisture_ch5"
 TYPE_SOILCH6 = "Soilmoisture_ch6"
 TYPE_SOILCH7 = "Soilmoisture_ch7"
 TYPE_SOILCH8 = "Soilmoisture_ch8"
+TYPE_SOILCH9 = "Soilmoisture_ch9"
+TYPE_SOILCH10 = "Soilmoisture_ch10"
+TYPE_SOILCH11 = "Soilmoisture_ch11"
+TYPE_SOILCH12 = "Soilmoisture_ch12"
+TYPE_SOILCH13 = "Soilmoisture_ch13"
+TYPE_SOILCH14 = "Soilmoisture_ch14"
+TYPE_SOILCH15 = "Soilmoisture_ch15"
+TYPE_SOILCH16 = "Soilmoisture_ch16"
 TYPE_ONLYTEMPCH1 = "tf_ch1"
 TYPE_ONLYTEMPCH2 = "tf_ch2"
 TYPE_ONLYTEMPCH3 = "tf_ch3"
@@ -153,6 +161,14 @@ TYPE_SOILCH5_BATT = "Soilmoisture_ch5_batt"
 TYPE_SOILCH6_BATT = "Soilmoisture_ch6_batt"
 TYPE_SOILCH7_BATT = "Soilmoisture_ch7_batt"
 TYPE_SOILCH8_BATT = "Soilmoisture_ch8_batt"
+TYPE_SOILCH9_BATT = "Soilmoisture_ch9_batt"
+TYPE_SOILCH10_BATT = "Soilmoisture_ch10_batt"
+TYPE_SOILCH11_BATT = "Soilmoisture_ch11_batt"
+TYPE_SOILCH12_BATT = "Soilmoisture_ch12_batt"
+TYPE_SOILCH13_BATT = "Soilmoisture_ch13_batt"
+TYPE_SOILCH14_BATT = "Soilmoisture_ch14_batt"
+TYPE_SOILCH15_BATT = "Soilmoisture_ch15_batt"
+TYPE_SOILCH16_BATT = "Soilmoisture_ch16_batt"
 TYPE_ONLYTEMPCH1_BATT = "tf_ch1_batt"
 TYPE_ONLYTEMPCH2_BATT = "tf_ch2_batt"
 TYPE_ONLYTEMPCH3_BATT = "tf_ch3_batt"
@@ -225,6 +241,14 @@ class MultiSensorInfo:
         TYPE_SOILCH6 : {"dev_type": "CH6 Soil","name":"CH6 Soil","data_type":WittiotDataTypes.HUMIDITY},
         TYPE_SOILCH7 : {"dev_type": "CH7 Soil","name":"CH7 Soil","data_type":WittiotDataTypes.HUMIDITY},
         TYPE_SOILCH8 : {"dev_type": "CH8 Soil","name":"CH8 Soil","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_SOILCH9 : {"dev_type": "CH9 Soil","name":"CH9 Soil","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_SOILCH10 : {"dev_type": "CH10 Soil","name":"CH10 Soil","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_SOILCH11 : {"dev_type": "CH11 Soil","name":"CH11 Soil","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_SOILCH12 : {"dev_type": "CH12 Soil","name":"CH12 Soil","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_SOILCH13 : {"dev_type": "CH13 Soil","name":"CH13 Soil","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_SOILCH14 : {"dev_type": "CH14 Soil","name":"CH14 Soil","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_SOILCH15 : {"dev_type": "CH15 Soil","name":"CH15 Soil","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_SOILCH16 : {"dev_type": "CH16 Soil","name":"CH16 Soil","data_type":WittiotDataTypes.HUMIDITY},
         TYPE_ONLYTEMPCH1 : {"dev_type": "CH1 Temp","name":"CH1 Temp","data_type":WittiotDataTypes.TEMPERATURE},
         TYPE_ONLYTEMPCH2 : {"dev_type": "CH2 Temp","name":"CH2 Temp","data_type":WittiotDataTypes.TEMPERATURE},
         TYPE_ONLYTEMPCH3 : {"dev_type": "CH3 Temp","name":"CH3 Temp","data_type":WittiotDataTypes.TEMPERATURE},
@@ -265,6 +289,14 @@ class MultiSensorInfo:
         TYPE_SOILCH6_BATT : {"dev_type": "CH6 Soil","name":"CH6 Soil Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_SOILCH7_BATT : {"dev_type": "CH7 Soil","name":"CH7 Soil Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_SOILCH8_BATT : {"dev_type": "CH8 Soil","name":"CH8 Soil Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_SOILCH9_BATT : {"dev_type": "CH9 Soil","name":"CH9 Soil Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_SOILCH10_BATT : {"dev_type": "CH10 Soil","name":"CH10 Soil Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_SOILCH11_BATT : {"dev_type": "CH11 Soil","name":"CH11 Soil Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_SOILCH12_BATT : {"dev_type": "CH12 Soil","name":"CH12 Soil Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_SOILCH13_BATT : {"dev_type": "CH13 Soil","name":"CH13 Soil Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_SOILCH14_BATT : {"dev_type": "CH14 Soil","name":"CH14 Soil Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_SOILCH15_BATT : {"dev_type": "CH15 Soil","name":"CH15 Soil Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_SOILCH16_BATT : {"dev_type": "CH16 Soil","name":"CH16 Soil Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_ONLYTEMPCH1_BATT : {"dev_type": "CH1 Temp","name":"CH1 Temp Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_ONLYTEMPCH2_BATT : {"dev_type": "CH2 Temp","name":"CH2 Temp Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_ONLYTEMPCH3_BATT : {"dev_type": "CH3 Temp","name":"CH3 Temp Battery","data_type":WittiotDataTypes.BATTERY},
@@ -446,8 +478,8 @@ class API:
         if val=="" or val =="--" or val =="--.-":
             return val
         val=val.replace("km","")
-        val=val.replace("mi","")
         val=val.replace("nmi","")
+        val=val.replace("mi","")
         val=float(val)
         if unit=="0":
             val=round(( val* 0.62137 ),1)
@@ -845,6 +877,14 @@ class API:
             "Soilmoisture_ch6":ld_soil[5],
             "Soilmoisture_ch7":ld_soil[6],
             "Soilmoisture_ch8":ld_soil[7],
+            "Soilmoisture_ch9":ld_soil[9],
+            "Soilmoisture_ch10":ld_soil[10],
+            "Soilmoisture_ch11":ld_soil[11],
+            "Soilmoisture_ch12":ld_soil[12],
+            "Soilmoisture_ch13":ld_soil[13],
+            "Soilmoisture_ch14":ld_soil[14],
+            "Soilmoisture_ch15":ld_soil[15],
+            "Soilmoisture_ch16":ld_soil[16],
             "tf_ch1":ld_onlytempch[0],
             "tf_ch2":ld_onlytempch[1],
             "tf_ch3":ld_onlytempch[2],
@@ -889,6 +929,14 @@ class API:
             "Soilmoisture_ch6_batt":self.val_tobattery(ld_sen_batt[19],"","1"),
             "Soilmoisture_ch7_batt":self.val_tobattery(ld_sen_batt[20],"","1"),
             "Soilmoisture_ch8_batt":self.val_tobattery(ld_sen_batt[21],"","1"),
+            "Soilmoisture_ch9_batt":self.val_tobattery(ld_sen_batt[58],"","1"),
+            "Soilmoisture_ch10_batt":self.val_tobattery(ld_sen_batt[59],"","1"),
+            "Soilmoisture_ch11_batt":self.val_tobattery(ld_sen_batt[60],"","1"),
+            "Soilmoisture_ch12_batt":self.val_tobattery(ld_sen_batt[61],"","1"),
+            "Soilmoisture_ch13_batt":self.val_tobattery(ld_sen_batt[62],"","1"),
+            "Soilmoisture_ch14_batt":self.val_tobattery(ld_sen_batt[63],"","1"),
+            "Soilmoisture_ch15_batt":self.val_tobattery(ld_sen_batt[64],"","1"),
+            "Soilmoisture_ch16_batt":self.val_tobattery(ld_sen_batt[65],"","1"),
             "tf_ch1_batt":self.val_tobattery(ld_sen_batt[31],"","1"),
             "tf_ch2_batt":self.val_tobattery(ld_sen_batt[32],"","1"),
             "tf_ch3_batt":self.val_tobattery(ld_sen_batt[33],"","1"),
