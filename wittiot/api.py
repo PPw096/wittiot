@@ -38,6 +38,9 @@ TYPE_ABS = "baromabsin"
 TYPE_TEMPOUT = "tempf"
 TYPE_HUMIOUT = "humidity"
 TYPE_WDIR = "winddir"
+TYPE_WDIR10 = "winddir10"
+TYPE_VPD = "vpd"
+TYPE_APPARE = "apparent"
 TYPE_WS = "windspeedmph"
 TYPE_WG = "windgustmph"
 TYPE_SR = "solarradiation"
@@ -51,12 +54,16 @@ TYPE_DR = "dailyrainin"
 TYPE_WR = "weeklyrainin"
 TYPE_MR = "monthlyrainin"
 TYPE_YR = "yearlyrainin"
+TYPE_TR = "totalrainin"
+TYPE_24R = "24hrainin"
 TYPE_PIEZO_RR = "rrain_piezo"
 TYPE_PIEZO_ER = "erain_piezo"
 TYPE_PIEZO_DR = "drain_piezo"
 TYPE_PIEZO_WR = "wrain_piezo"
 TYPE_PIEZO_MR = "mrain_piezo"
 TYPE_PIEZO_YR = "yrain_piezo"
+TYPE_PIEZO_TR = "train_piezo"
+TYPE_PIEZO_24R = "rain_piezo24h"
 TYPE_PM25CH1 = "pm25_ch1"
 TYPE_PM25CH2 = "pm25_ch2"
 TYPE_PM25CH3 = "pm25_ch3"
@@ -136,6 +143,18 @@ TYPE_LEAFCH5 = "leaf_ch5"
 TYPE_LEAFCH6 = "leaf_ch6"
 TYPE_LEAFCH7 = "leaf_ch7"
 TYPE_LEAFCH8 = "leaf_ch8"
+TYPE_LDSAIRCH1 = "lds_air_ch1"
+TYPE_LDSAIRCH2 = "lds_air_ch2"
+TYPE_LDSAIRCH3 = "lds_air_ch3"
+TYPE_LDSAIRCH4 = "lds_air_ch4"
+TYPE_LDSDEPCH1 = "lds_dep_ch1"
+TYPE_LDSDEPCH2 = "lds_dep_ch2"
+TYPE_LDSDEPCH3 = "lds_dep_ch3"
+TYPE_LDSDEPCH4 = "lds_dep_ch4"
+TYPE_LDSHEATCH1 = "lds_heat_ch1"
+TYPE_LDSHEATCH2 = "lds_heat_ch2"
+TYPE_LDSHEATCH3 = "lds_heat_ch3"
+TYPE_LDSHEATCH4 = "lds_heat_ch4"
 
 TYPE_PM25CH1_BATT = "pm25_ch1_batt"
 TYPE_PM25CH2_BATT = "pm25_ch2_batt"
@@ -185,6 +204,10 @@ TYPE_LEAFCH5_BATT = "leaf_ch5_batt"
 TYPE_LEAFCH6_BATT = "leaf_ch6_batt"
 TYPE_LEAFCH7_BATT = "leaf_ch7_batt"
 TYPE_LEAFCH8_BATT = "leaf_ch8_batt"
+TYPE_LDSCH1_BATT = "lds_ch1_batt"
+TYPE_LDSCH2_BATT = "lds_ch2_batt"
+TYPE_LDSCH3_BATT = "lds_ch3_batt"
+TYPE_LDSCH4_BATT = "lds_ch4_batt"
 
 class WittiotDataTypes(enum.Enum):
     """Wittiot Data types."""
@@ -194,6 +217,8 @@ class WittiotDataTypes(enum.Enum):
     AQI=4
     LEAK = 5
     BATTERY = 6
+    DISTANCE = 7
+    HEAT = 8
 
 
 
@@ -265,6 +290,18 @@ class MultiSensorInfo:
         TYPE_LEAFCH6 : {"dev_type": "CH6 Leaf","name":"CH6 Leaf","data_type":WittiotDataTypes.HUMIDITY},
         TYPE_LEAFCH7 : {"dev_type": "CH7 Leaf","name":"CH7 Leaf","data_type":WittiotDataTypes.HUMIDITY},
         TYPE_LEAFCH8 : {"dev_type": "CH8 Leaf","name":"CH8 Leaf","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_LDSAIRCH1 : {"dev_type": "CH1 Lds","name":"CH1 Air","data_type":WittiotDataTypes.DISTANCE},
+        TYPE_LDSAIRCH2 : {"dev_type": "CH2 Lds","name":"CH2 Air","data_type":WittiotDataTypes.DISTANCE},
+        TYPE_LDSAIRCH3 : {"dev_type": "CH3 Lds","name":"CH3 Air","data_type":WittiotDataTypes.DISTANCE},
+        TYPE_LDSAIRCH4 : {"dev_type": "CH4 Lds","name":"CH4 Air","data_type":WittiotDataTypes.DISTANCE},
+        TYPE_LDSDEPCH1 : {"dev_type": "CH1 Lds","name":"CH1 Depth","data_type":WittiotDataTypes.DISTANCE},
+        TYPE_LDSDEPCH2 : {"dev_type": "CH2 Lds","name":"CH2 Depth","data_type":WittiotDataTypes.DISTANCE},
+        TYPE_LDSDEPCH3 : {"dev_type": "CH3 Lds","name":"CH3 Depth","data_type":WittiotDataTypes.DISTANCE},
+        TYPE_LDSDEPCH4 : {"dev_type": "CH4 Lds","name":"CH4 Depth","data_type":WittiotDataTypes.DISTANCE},
+        TYPE_LDSHEATCH1 : {"dev_type": "CH1 Lds","name":"CH1 Heater-on Counter","data_type":WittiotDataTypes.HEAT},
+        TYPE_LDSHEATCH2 : {"dev_type": "CH2 Lds","name":"CH2 Heater-on Counter","data_type":WittiotDataTypes.HEAT},
+        TYPE_LDSHEATCH3 : {"dev_type": "CH3 Lds","name":"CH3 Heater-on Counter","data_type":WittiotDataTypes.HEAT},
+        TYPE_LDSHEATCH4 : {"dev_type": "CH4 Lds","name":"CH4 Heater-on Counter","data_type":WittiotDataTypes.HEAT},
         TYPE_PM25CH1_BATT : {"dev_type": "CH1 PM25","name":"CH1 PM2.5 Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_PM25CH2_BATT : {"dev_type": "CH2 PM25","name":"CH2 PM2.5 Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_PM25CH3_BATT : {"dev_type": "CH3 PM25","name":"CH3 PM2.5 Battery","data_type":WittiotDataTypes.BATTERY},
@@ -313,6 +350,10 @@ class MultiSensorInfo:
         TYPE_LEAFCH6_BATT : {"dev_type": "CH6 Leaf","name":"CH6 Leaf Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_LEAFCH7_BATT : {"dev_type": "CH7 Leaf","name":"CH7 Leaf Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_LEAFCH8_BATT : {"dev_type": "CH8 Leaf","name":"CH8 Leaf Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_LDSCH1_BATT : {"dev_type": "CH1 Lds","name":"CH1 Lds Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_LDSCH2_BATT : {"dev_type": "CH2 Lds","name":"CH2 Lds Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_LDSCH3_BATT : {"dev_type": "CH3 Lds","name":"CH3 Lds Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_LDSCH4_BATT : {"dev_type": "CH4 Lds","name":"CH4 Lds Battery","data_type":WittiotDataTypes.BATTERY},
     }
 
 class API:
@@ -393,6 +434,17 @@ class API:
         else:
             val
         return val
+    def locval_tolds(self,val,unit):
+        if val=="" or val =="--" or val =="--.-":
+            return val
+        val=val.replace("mm","")
+        val=val.replace("ft","")
+        val=float(val)
+        if unit=="0":
+            val=round(val/304.8,2)
+        else:
+            val
+        return val
     def locval_tohumi(self,val):
         val=val.replace("%","")
         return val
@@ -432,6 +484,20 @@ class API:
             val
         else:
             val=round((val*1.33322/ 33.86388),1)
+        return val
+    def locval_topressmk2(self,val,unit):
+        if val=="" or val =="--" or val =="--.-":
+            return val
+        val=val.replace("kPa","")
+        val=val.replace("inHg","")
+        val=val.replace("mmHg","")
+        val=float(val)
+        if unit=="0":
+            val=round((val/ 3.386388),3)
+        elif unit=="1":
+            val
+        else:
+            val=round((val*1.33322/ 33.86388),3)
         return val
     def locval_torain(self,val,unit):
         if val=="" or val =="--" or val =="--.-":
@@ -519,6 +585,9 @@ class API:
         ld_abs= ''
         ld_rel= ''
         ld_wdir= ''
+        ld_wdir10= ''
+        ld_apparent= ''
+        ld_vpd= ''
         ld_ws= ''
         ld_wg= ''
         ld_sr= ''
@@ -534,12 +603,17 @@ class API:
         ra_month= ''
         ra_year= ''
         ra_event= ''
+        ra_total= ''	
+        ra_24hour= ''
         piezora_rate= ''
         piezora_daily= ''
         piezora_weekly= ''
         piezora_month= ''
         piezora_year= ''
         piezora_event= ''
+        piezora_total= ''	
+        piezora_24hour= ''
+
 
         cr_piezora_gain= []
 
@@ -577,6 +651,9 @@ class API:
         ld_humich= []
         ld_onlytempch= []
         ld_leafch= []
+        ld_lds_airch= []
+        ld_lds_depthch= []
+        ld_lds_heatch= []
         ld_co2_tf= ''
         ld_co2_humi= ''
         ld_co2_pm10= ''
@@ -639,6 +716,12 @@ class API:
                     ld_daywindmax=res_data["common_list"][index]["val"]
                 elif res_data["common_list"][index]["id"]=='3':
                     ld_feellike=res_data["common_list"][index]["val"]
+                elif res_data["common_list"][index]["id"]=='0x6D':
+                    ld_wdir10=res_data["common_list"][index]["val"]
+                elif res_data["common_list"][index]["id"]=='4':
+                    ld_apparent=res_data["common_list"][index]["val"]
+                elif res_data["common_list"][index]["id"]=='5':
+                    ld_vpd=res_data["common_list"][index]["val"]
 
         if "rain" in res_data:
             for index in range(len(res_data["rain"])):
@@ -654,6 +737,10 @@ class API:
                     ra_month=res_data["rain"][index]["val"]
                 elif res_data["rain"][index]["id"]=='0x13':
                     ra_year=res_data["rain"][index]["val"]
+                elif res_data["rain"][index]["id"]=='0x14':
+                    ra_total=res_data["rain"][index]["val"]
+                elif res_data["rain"][index]["id"]=='0x7C':
+                    ra_24hour=res_data["rain"][index]["val"]
 
         if "piezoRain" in res_data:
             for index in range(len(res_data["piezoRain"])):
@@ -669,6 +756,10 @@ class API:
                     piezora_month=res_data["piezoRain"][index]["val"]
                 elif res_data["piezoRain"][index]["id"]=='0x13':
                     piezora_year=res_data["piezoRain"][index]["val"]
+                elif res_data["piezoRain"][index]["id"]=='0x14':
+                    piezora_total=res_data["piezoRain"][index]["val"]
+                elif res_data["piezoRain"][index]["id"]=='0x7C':
+                    piezora_24hour=res_data["piezoRain"][index]["val"]
 
         if "wh25" in res_data:
             ld_intemp=res_data["wh25"][0]["intemp"]
@@ -732,12 +823,18 @@ class API:
         ld_humich=[]
         ld_onlytempch=[]
         ld_leafch=[]
+        ld_lds_airch=[]
+        ld_lds_depthch=[]
+        ld_lds_heatch=[]
         for i in range(16):
             ld_soil.append("--")
             ld_tempch.append("--")
             ld_humich.append("--")
             ld_onlytempch.append("--")
             ld_leafch.append("--")
+            ld_lds_airch.append("--")
+            ld_lds_depthch.append("--")
+            ld_lds_heatch.append("--")
 
         if "ch_aisle" in res_data:
             for index in range(len(res_data["ch_aisle"])):
@@ -761,6 +858,13 @@ class API:
             for index in range(len(res_data["ch_leaf"])):
                 ch=int(res_data["ch_leaf"][index]["channel"])-1
                 ld_leafch[ch]=self.locval_tohumi(res_data["ch_leaf"][index]["humidity"])
+                
+        if "ch_lds" in res_data:
+            for index in range(len(res_data["ch_lds"])):
+                ch=int(res_data["ch_lds"][index]["channel"])-1
+                ld_lds_airch[ch]=self.locval_tolds(res_data["ch_lds"][index]["air"],unit_rain)
+                ld_lds_depthch[ch]=self.locval_tolds(res_data["ch_lds"][index]["depth"],unit_rain)
+                ld_lds_heatch[ch]=res_data["ch_lds"][index]["total_heat"]
 
         ld_sen_batt=[]
         for i in range(99):
@@ -803,6 +907,9 @@ class API:
             "tempf":self.locval_totemp(ld_outtemp,unit_temp),
             "humidity":self.locval_tohumi(ld_outhumi),
             "winddir":ld_wdir,
+            "winddir10":ld_wdir10,
+            "apparent":self.locval_totemp(ld_apparent,unit_temp),
+            "vpd":self.locval_topressmk2(ld_vpd,unit_press),
             "windspeedmph":self.locval_towind(ld_ws,unit_wind),
             "windgustmph":self.locval_towind(ld_wg,unit_wind),
             "solarradiation":self.locval_tosr(ld_sr,unit_light),
@@ -816,12 +923,16 @@ class API:
             "weeklyrainin":self.locval_torain(ra_weekly,unit_rain),
             "monthlyrainin":self.locval_torain(ra_month,unit_rain),
             "yearlyrainin":self.locval_torain(ra_year,unit_rain),
+            "totalrainin":self.locval_torain(ra_total,unit_rain),
+            "24hrainin":self.locval_torain(ra_24hour,unit_rain),
             "rrain_piezo":self.locval_torain(piezora_rate,unit_rain),
             "erain_piezo":self.locval_torain(piezora_event,unit_rain),
             "drain_piezo":self.locval_torain(piezora_daily,unit_rain),
             "wrain_piezo":self.locval_torain(piezora_weekly,unit_rain),
             "mrain_piezo":self.locval_torain(piezora_month,unit_rain),
             "yrain_piezo":self.locval_torain(piezora_year,unit_rain),
+            "train_piezo":self.locval_torain(piezora_total,unit_rain),
+            "24hrain_piezo":self.locval_torain(piezora_24hour,unit_rain),
             "pm25_ch1":ld_pm25ch1,
             "pm25_ch2":ld_pm25ch2,
             "pm25_ch3":ld_pm25ch3,
@@ -853,6 +964,18 @@ class API:
             "leak_ch2":ld_leakch2,
             "leak_ch3":ld_leakch3,
             "leak_ch4":ld_leakch4,
+            "lds_air_ch1":ld_lds_airch[0],
+            "lds_air_ch2":ld_lds_airch[1],
+            "lds_air_ch3":ld_lds_airch[2],
+            "lds_air_ch4":ld_lds_airch[3],
+            "lds_depth_ch1":ld_lds_depthch[0],
+            "lds_depth_ch2":ld_lds_depthch[1],
+            "lds_depth_ch3":ld_lds_depthch[2],
+            "lds_depth_ch4":ld_lds_depthch[3],
+            "lds_heat_ch1":ld_lds_heatch[0],
+            "lds_heat_ch2":ld_lds_heatch[1],
+            "lds_heat_ch3":ld_lds_heatch[2],
+            "lds_heat_ch4":ld_lds_heatch[3],
             "temp_ch1":ld_tempch[0],
             "temp_ch2":ld_tempch[1],
             "temp_ch3":ld_tempch[2],
@@ -953,10 +1076,14 @@ class API:
             "leaf_ch6_batt":self.val_tobattery(ld_sen_batt[45],"","1"),
             "leaf_ch7_batt":self.val_tobattery(ld_sen_batt[46],"","1"),
             "leaf_ch8_batt":self.val_tobattery(ld_sen_batt[47],"","1"),
+            "lds_ch1_batt":self.val_tobattery(ld_sen_batt[66],"","1"),
+            "lds_ch2_batt":self.val_tobattery(ld_sen_batt[67],"","1"),
+            "lds_ch3_batt":self.val_tobattery(ld_sen_batt[68],"","1"),
+            "lds_ch4_batt":self.val_tobattery(ld_sen_batt[69],"","1"),
 
         }
         # 删除值为指定字符串的键值对
-        keys_to_remove = [key for key, val in list(resjson.items()) if val in ["None", "--", "", "--.-"]]
+        keys_to_remove = [key for key, val in list(resjson.items()) if val in ["None", "--", "", "--.-", "---.-"]]
 
         for key in keys_to_remove:
             del resjson[key]
