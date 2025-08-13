@@ -29,7 +29,7 @@ GW11268_API_SYS = "get_device_info"
 GW11268_API_MAC = "get_network_info"
 
 DEFAULT_LIMIT = 288
-DEFAULT_TIMEOUT = 10
+DEFAULT_TIMEOUT = 20
 
 TYPE_TEMPINF = "tempinf"
 TYPE_HUMIDITYIN = "humidityin"
@@ -523,6 +523,26 @@ class API:
         else:
             val=round(( val*1000*10.76391/126.7 ),2)
         return val
+    def get_min_wind_speed(self,bft_level):
+        # 蒲福风级与最小风速对应表
+        bft_level=int(bft_level)
+        bft_to_min_speed = {
+            0: 0.0,    # 无风
+            1: 1.0,    # 软风
+            2: 4.0,    # 轻风
+            3: 8.0,    # 微风
+            4: 13.0,   # 和风
+            5: 19.0,   # 清风
+            6: 24.0,   # 强风
+            7: 31.0,   # 疾风
+            8: 39.0,   # 大风
+            9: 47.0,   # 烈风
+            10: 55.0,  # 狂风
+            11: 63.0,  # 暴风
+            12: 74.0   # 飓风
+        }
+        return bft_to_min_speed[bft_level]
+    
     def locval_towind(self,val,unit):
         if val=="" or val =="--" or val =="--.-":
             return val
@@ -530,13 +550,19 @@ class API:
         val=val.replace("km/h","")
         val=val.replace("knots","")
         val=val.replace("mph","")
+        val=val.replace("BFT","")
+        val=val.replace("ft/s","")
         val=float(val)
         if unit=="0":
             val=round(( val*2.236936 ),2)
         elif unit=="1":
-            val=round(( val/3.6 *2.236936 ),2)
-        elif unit=="2":
-            val=round(( val/1.943844*2.236936 ),2)
+            val=round(( val*0.621371 ),2)
+        elif unit=="3":
+            val=round(( val*1.15078 ),2)
+        elif unit=="5":
+            val=self.get_min_wind_speed(val)
+        # elif unit=="5":
+        #     val=round(( val/1.466667 ),2)
         else:
             val
         return val
@@ -864,7 +890,7 @@ class API:
                 ch=int(res_data["ch_lds"][index]["channel"])-1
                 ld_lds_airch[ch]=self.locval_tolds(res_data["ch_lds"][index]["air"],unit_rain)
                 ld_lds_depthch[ch]=self.locval_tolds(res_data["ch_lds"][index]["depth"],unit_rain)
-                ld_lds_heatch[ch]=res_data["ch_lds"][index]["total_heat"]
+                ld_lds_heatch[ch]=res_data["ch_lds"][index].get("total_heat", "--")
 
         ld_sen_batt=[]
         for i in range(99):
