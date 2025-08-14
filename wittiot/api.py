@@ -64,6 +64,11 @@ TYPE_PIEZO_MR = "mrain_piezo"
 TYPE_PIEZO_YR = "yrain_piezo"
 TYPE_PIEZO_TR = "train_piezo"
 TYPE_PIEZO_24R = "rain_piezo24h"
+
+TYPE_CONSOLE_BATT  = "con_batt"
+TYPE_CONSOLE_BVOLT = "con_batt_volt"
+TYPE_CONSOLE_EVOLT = "con_ext_volt"
+
 TYPE_PM25CH1 = "pm25_ch1"
 TYPE_PM25CH2 = "pm25_ch2"
 TYPE_PM25CH3 = "pm25_ch3"
@@ -694,6 +699,11 @@ class API:
 
         ld_co2_co2_in= ''
         ld_co2_co224_in= ''
+        
+        ld_con_batt= ''
+        ld_con_batt_volt= ''
+        ld_con_ext_volt= ''
+
 
         ld_sen_batt=[]
         # url = f"http://{self._ip}/{GW11268_API_UNIT}"
@@ -801,6 +811,11 @@ class API:
             ld_lightning=res_data["lightning"][0]["distance"]
             ld_lightning_time=res_data["lightning"][0]["timestamp"]
             ld_lightning_power=res_data["lightning"][0]["count"]
+            
+        if "console" in res_data:
+            ld_con_batt     =res_data["console"][0].get("battery", "--")
+            ld_con_batt_volt=res_data["console"][0].get("console_batt_volt", "--")
+            ld_con_ext_volt  =res_data["console"][0].get("console_ext_volt", "--")
 
         if "co2" in res_data:
              ld_co2_tf=res_data["co2"][0]["temp"]
@@ -959,6 +974,9 @@ class API:
             "yrain_piezo":self.locval_torain(piezora_year,unit_rain),
             "train_piezo":self.locval_torain(piezora_total,unit_rain),
             "24hrain_piezo":self.locval_torain(piezora_24hour,unit_rain),
+            "con_batt":self.val_tobattery(ld_con_batt,"","1"),    
+            "con_batt_volt":ld_con_batt_volt,  
+            "con_ext_volt" :ld_con_ext_volt,  
             "pm25_ch1":ld_pm25ch1,
             "pm25_ch2":ld_pm25ch2,
             "pm25_ch3":ld_pm25ch3,
