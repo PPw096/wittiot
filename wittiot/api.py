@@ -65,6 +65,9 @@ TYPE_PIEZO_YR = "yrain_piezo"
 TYPE_PIEZO_TR = "train_piezo"
 TYPE_PIEZO_24R = "rain_piezo24h"
 
+TYPE_PIEZO_SR = "srain_piezo"
+TYPE_PIEZO__BATT = "batt_piezo"
+
 TYPE_CONSOLE_BATT  = "con_batt"
 TYPE_CONSOLE_BVOLT = "con_batt_volt"
 TYPE_CONSOLE_EVOLT = "con_ext_volt"
@@ -81,8 +84,7 @@ TYPE_PM2524HAQICH1 = "pm25_avg_24h_ch1"
 TYPE_PM2524HAQICH2 = "pm25_avg_24h_ch2"
 TYPE_PM2524HAQICH3 = "pm25_avg_24h_ch3"
 TYPE_PM2524HAQICH4 = "pm25_avg_24h_ch4"
-TYPE_CO2IN = "co2in"
-TYPE_CO224HIN = "co2in_24h"
+
 TYPE_CO2OUT = "co2"
 TYPE_CO224HOUT = "co2_24h"
 TYPE_CO2PM25 = "pm25_co2"
@@ -93,6 +95,18 @@ TYPE_CO2RTPM10 = "pm10_aqi_co2"
 TYPE_CO2RTPM25 = "pm25_aqi_co2"
 TYPE_CO2TEMP = "tf_co2"
 TYPE_CO2HUMI = "humi_co2"
+
+TYPE_CO2PM1 = "pm1_co2"
+TYPE_CO224HPM1 = "pm1_24h_co2"
+TYPE_CO2RTPM1 = "pm1_aqi_co2"
+TYPE_CO2PM4 = "pm4_co2"
+TYPE_CO224HPM4 = "pm4_24h_co2"
+TYPE_CO2RTPM4 = "pm4_aqi_co2"
+
+TYPE_CO2IN = "co2in"
+TYPE_CO224HIN = "co2in_24h"
+
+
 TYPE_LIGHTNING = "lightning"
 TYPE_LIGHTNINGTIME = "lightning_time"
 TYPE_LIGHTNINGNUM = "lightning_num"
@@ -453,6 +467,14 @@ class API:
     def locval_tohumi(self,val):
         val=val.replace("%","")
         return val
+    def locval_tosrain(self,val):
+        if val=="" or val =="--" or val =="--.-":
+            return val
+        if val=="0":
+            val="No rain"
+        else:
+            val="Raining"
+        return val
     def val_tobattery(self,val,unit,nty):
         if val=="" or val =="--" or val =="--.-":
             return val
@@ -515,7 +537,7 @@ class API:
             val=round((val/ 25.4),2)
         return val
     def locval_tosr(self,val,unit):
-        if val=="" or val =="--" or val =="--.-":
+        if val=="" or val =="--" or val =="--.-" or val =="---.-":
             return val
         val=val.replace("W/m2","")
         val=val.replace("Kfc","")
@@ -644,7 +666,8 @@ class API:
         piezora_event= ''
         piezora_total= ''	
         piezora_24hour= ''
-
+        piezora_state= ''	
+        piezora_batt= ''
 
         cr_piezora_gain= []
 
@@ -699,6 +722,13 @@ class API:
 
         ld_co2_co2_in= ''
         ld_co2_co224_in= ''
+        
+        ld_co2_pm1= ''
+        ld_co2_pm124= ''
+        ld_co2_pm1_AQI=''
+        ld_co2_pm4= ''
+        ld_co2_pm424= ''
+        ld_co2_pm4_AQI=''
         
         ld_con_batt= ''
         ld_con_batt_volt= ''
@@ -792,10 +822,13 @@ class API:
                     piezora_month=res_data["piezoRain"][index]["val"]
                 elif res_data["piezoRain"][index]["id"]=='0x13':
                     piezora_year=res_data["piezoRain"][index]["val"]
+                    piezora_batt=res_data["piezoRain"][index].get("battery", "--")
                 elif res_data["piezoRain"][index]["id"]=='0x14':
                     piezora_total=res_data["piezoRain"][index]["val"]
                 elif res_data["piezoRain"][index]["id"]=='0x7C':
                     piezora_24hour=res_data["piezoRain"][index]["val"]
+                elif res_data["piezoRain"][index]["id"]=='srain_piezo':
+                    piezora_state=res_data["piezoRain"][index]["val"]
 
         if "wh25" in res_data:
             ld_intemp=res_data["wh25"][0]["intemp"]
@@ -828,6 +861,12 @@ class API:
              ld_co2_pm2524=res_data["co2"][0]["PM25_24HAQI"]
              ld_co2_co2=res_data["co2"][0]["CO2"]
              ld_co2_co224=res_data["co2"][0]["CO2_24H"]
+             ld_co2_pm1= res_data["co2"][0].get("PM1", "--")
+             ld_co2_pm124= res_data["co2"][0].get("PM1_24HAQI", "--")
+             ld_co2_pm1_AQI=res_data["co2"][0].get("PM1_RealAQI", "--")
+             ld_co2_pm4= res_data["co2"][0].get("PM4", "--")
+             ld_co2_pm424= res_data["co2"][0].get("PM4_24HAQI", "--")
+             ld_co2_pm4_AQI=res_data["co2"][0].get("PM4_RealAQI", "--")
 
         if "ch_pm25" in res_data:
             for index in range(len(res_data["ch_pm25"])):
@@ -974,6 +1013,8 @@ class API:
             "yrain_piezo":self.locval_torain(piezora_year,unit_rain),
             "train_piezo":self.locval_torain(piezora_total,unit_rain),
             "24hrain_piezo":self.locval_torain(piezora_24hour,unit_rain),
+            "srain_piezo":self.locval_tosrain(piezora_state),
+            "piezora_batt":self.val_tobattery(piezora_batt,"","1"),
             "con_batt":self.val_tobattery(ld_con_batt,"","1"),    
             "con_batt_volt":ld_con_batt_volt,  
             "con_ext_volt" :ld_con_ext_volt,  
@@ -999,6 +1040,12 @@ class API:
             "pm10_24h_co2":ld_co2_pm1024,
             "pm10_aqi_co2":ld_co2_pm10_AQI,
             "pm25_aqi_co2":ld_co2_pm25_AQI,
+            "pm1_co2":ld_co2_pm1,
+            "pm1_24h_co2":ld_co2_pm124,
+            "pm1_aqi_co2":ld_co2_pm1_AQI,
+            "pm4_co2":ld_co2_pm4,
+            "pm4_24h_co2":ld_co2_pm424,
+            "pm4_aqi_co2":ld_co2_pm4_AQI,
             "tf_co2":self.locval_totemp(ld_co2_tf,unit_temp),
             "humi_co2":self.locval_tohumi(ld_co2_humi),
             "lightning":self.locval_tolinghtdis(ld_lightning,unit_wind),
