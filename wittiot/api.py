@@ -444,10 +444,20 @@ class API:
     async def _request_loc_unit(self) -> List[Dict[str, Any]]:
         url = f"http://{self._ip}/{GW11268_API_UNIT}"
         return await self._request_data(url)
+    def is_valid_float(self,val):
+        try:
+            float(val)  # 尝试转换 
+            return True 
+        except (ValueError, TypeError):  # 捕获无效转换 
+            return False 
+
     def locval_totemp(self,val,unit):
         if val=="" or val =="--" or val =="--.-":
             return val
-        val=float(val)
+        if self.is_valid_float(val):
+            val=float(val)
+        else:
+             return ""
         if unit=="0":
             val=round(val*1.8+32.0,1)
         else:
@@ -458,7 +468,10 @@ class API:
             return val
         val=val.replace("mm","")
         val=val.replace("ft","")
-        val=float(val)
+        if self.is_valid_float(val):
+            val=float(val)
+        else:
+             return ""
         if unit=="0":
             val=round(val/304.8,2)
         else:
@@ -475,6 +488,14 @@ class API:
         else:
             val="Raining"
         return val
+    def val_tobattery_binary(self,val):
+        if val=="" or val =="--" or val =="--.-":
+            return val
+        if val=="0":
+            val="Normal"
+        else:
+            val="Low"
+        return val
     def val_tobattery(self,val,unit,nty):
         if val=="" or val =="--" or val =="--.-":
             return val
@@ -482,6 +503,10 @@ class API:
             if unit!="":
                 val=f"{val} {unit}"
             else:
+                if self.is_valid_float(val):
+                    val=float(val)
+                else:
+                     return ""
                 val=int(val)
                 if val>0 and val<=5:
                     val=f"{val*20}%"
@@ -490,6 +515,10 @@ class API:
                 else:
                     val=""
         elif nty=="1":
+            if self.is_valid_float(val):
+                val=float(val)
+            else:
+                return ""
             val=int(val)
             if val>0 and val<=5:
                  val=f"{val*20}%"
@@ -504,6 +533,10 @@ class API:
         val=val.replace("hPa","")
         val=val.replace("inHg","")
         val=val.replace("mmHg","")
+        if self.is_valid_float(val):
+            val=float(val)
+        else:
+            return ""
         val=float(val)
         if unit=="0":
             val=round((val/ 33.86388),2)
@@ -518,7 +551,10 @@ class API:
         val=val.replace("kPa","")
         val=val.replace("inHg","")
         val=val.replace("mmHg","")
-        val=float(val)
+        if self.is_valid_float(val):
+            val=float(val)
+        else:
+            return ""
         if unit=="0":
             val=round((val/ 3.386388),3)
         elif unit=="1":
@@ -532,7 +568,10 @@ class API:
         val=val.replace("in","")
         val=val.replace("mm","")
         val=val.replace("/Hr","")
-        val=float(val)
+        if self.is_valid_float(val):
+            val=float(val)
+        else:
+            return ""
         if unit=="0":
             val=round((val/ 25.4),2)
         return val
@@ -542,7 +581,10 @@ class API:
         val=val.replace("W/m2","")
         val=val.replace("Kfc","")
         val=val.replace("Klux","")
-        val=float(val)
+        if self.is_valid_float(val):
+            val=float(val)
+        else:
+            return ""
         if unit=="0":
             val=round(( val*1000/126.7 ),2)
         elif unit=="1":
@@ -579,7 +621,10 @@ class API:
         val=val.replace("mph","")
         val=val.replace("BFT","")
         val=val.replace("ft/s","")
-        val=float(val)
+        if self.is_valid_float(val):
+            val=float(val)
+        else:
+            return ""
         if unit=="0":
             val=round(( val*2.236936 ),2)
         elif unit=="1":
@@ -599,7 +644,10 @@ class API:
         val=val.replace("km","")
         val=val.replace("nmi","")
         val=val.replace("mi","")
-        val=float(val)
+        if self.is_valid_float(val):
+            val=float(val)
+        else:
+            return ""
         if unit=="0":
             val=round(( val* 0.62137 ),1)
         elif unit=="1":
@@ -1127,14 +1175,14 @@ class API:
             "leak_ch2_batt":self.val_tobattery(ld_sen_batt[28],"","1"),
             "leak_ch3_batt":self.val_tobattery(ld_sen_batt[29],"","1"),
             "leak_ch4_batt":self.val_tobattery(ld_sen_batt[30],"","1"),
-            "temph_ch1_batt":self.val_tobattery(ld_sen_batt[6] ,"","1"),
-            "temph_ch2_batt":self.val_tobattery(ld_sen_batt[7] ,"","1"),
-            "temph_ch3_batt":self.val_tobattery(ld_sen_batt[8] ,"","1"),
-            "temph_ch4_batt":self.val_tobattery(ld_sen_batt[9] ,"","1"),
-            "temph_ch5_batt":self.val_tobattery(ld_sen_batt[10] ,"","1"),
-            "temph_ch6_batt":self.val_tobattery(ld_sen_batt[11],"","1"),
-            "temph_ch7_batt":self.val_tobattery(ld_sen_batt[12],"","1"),
-            "temph_ch8_batt":self.val_tobattery(ld_sen_batt[13],"","1"),
+            "temph_ch1_batt":self.val_tobattery_binary(ld_sen_batt[6] ),
+            "temph_ch2_batt":self.val_tobattery_binary(ld_sen_batt[7] ),
+            "temph_ch3_batt":self.val_tobattery_binary(ld_sen_batt[8] ),
+            "temph_ch4_batt":self.val_tobattery_binary(ld_sen_batt[9] ),
+            "temph_ch5_batt":self.val_tobattery_binary(ld_sen_batt[10]),
+            "temph_ch6_batt":self.val_tobattery_binary(ld_sen_batt[11]),
+            "temph_ch7_batt":self.val_tobattery_binary(ld_sen_batt[12]),
+            "temph_ch8_batt":self.val_tobattery_binary(ld_sen_batt[13]),
             "Soilmoisture_ch1_batt":self.val_tobattery(ld_sen_batt[14],"","1"),
             "Soilmoisture_ch2_batt":self.val_tobattery(ld_sen_batt[15],"","1"),
             "Soilmoisture_ch3_batt":self.val_tobattery(ld_sen_batt[16],"","1"),
@@ -1174,7 +1222,7 @@ class API:
 
         }
         # 删除值为指定字符串的键值对
-        keys_to_remove = [key for key, val in list(resjson.items()) if val in ["None", "--", "", "--.-", "---.-"]]
+        keys_to_remove = [key for key, val in list(resjson.items()) if val in ["None", "--", "", "--.-", "---.-" "--.--"]]
 
         for key in keys_to_remove:
             del resjson[key]
