@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
  
 setuptools.setup(
   name="wittiot",
-  version="1.0.17",
+  version="1.0.18",
   author="PPw096",
   author_email="1225835565@qq.com",
   description="WSView Plus support",

@@ -238,6 +238,7 @@ class WittiotDataTypes(enum.Enum):
     BATTERY = 6
     DISTANCE = 7
     HEAT = 8
+    BATTERY_BINARY=9
 
 
 
@@ -329,14 +330,14 @@ class MultiSensorInfo:
         TYPE_LEAKCH2_BATT : {"dev_type": "CH2 LEAK","name":"CH2 LEAK Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_LEAKCH3_BATT : {"dev_type": "CH3 LEAK","name":"CH3 LEAK Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_LEAKCH4_BATT : {"dev_type": "CH4 LEAK","name":"CH4 LEAK Battery","data_type":WittiotDataTypes.BATTERY},
-        TYPE_TEMPCH1_BATT : {"dev_type": "CH1 T&H","name":"CH1 T&H Battery","data_type":WittiotDataTypes.BATTERY},
-        TYPE_TEMPCH2_BATT : {"dev_type": "CH2 T&H","name":"CH2 T&H Battery","data_type":WittiotDataTypes.BATTERY},
-        TYPE_TEMPCH3_BATT : {"dev_type": "CH3 T&H","name":"CH3 T&H Battery","data_type":WittiotDataTypes.BATTERY},
-        TYPE_TEMPCH4_BATT : {"dev_type": "CH4 T&H","name":"CH4 T&H Battery","data_type":WittiotDataTypes.BATTERY},
-        TYPE_TEMPCH5_BATT : {"dev_type": "CH5 T&H","name":"CH5 T&H Battery","data_type":WittiotDataTypes.BATTERY},
-        TYPE_TEMPCH6_BATT : {"dev_type": "CH6 T&H","name":"CH6 T&H Battery","data_type":WittiotDataTypes.BATTERY},
-        TYPE_TEMPCH7_BATT : {"dev_type": "CH7 T&H","name":"CH7 T&H Battery","data_type":WittiotDataTypes.BATTERY},
-        TYPE_TEMPCH8_BATT : {"dev_type": "CH8 T&H","name":"CH8 T&H Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_TEMPCH1_BATT : {"dev_type": "CH1 T&H","name":"CH1 T&H Battery","data_type":WittiotDataTypes.BATTERY_BINARY},
+        TYPE_TEMPCH2_BATT : {"dev_type": "CH2 T&H","name":"CH2 T&H Battery","data_type":WittiotDataTypes.BATTERY_BINARY},
+        TYPE_TEMPCH3_BATT : {"dev_type": "CH3 T&H","name":"CH3 T&H Battery","data_type":WittiotDataTypes.BATTERY_BINARY},
+        TYPE_TEMPCH4_BATT : {"dev_type": "CH4 T&H","name":"CH4 T&H Battery","data_type":WittiotDataTypes.BATTERY_BINARY},
+        TYPE_TEMPCH5_BATT : {"dev_type": "CH5 T&H","name":"CH5 T&H Battery","data_type":WittiotDataTypes.BATTERY_BINARY},
+        TYPE_TEMPCH6_BATT : {"dev_type": "CH6 T&H","name":"CH6 T&H Battery","data_type":WittiotDataTypes.BATTERY_BINARY},
+        TYPE_TEMPCH7_BATT : {"dev_type": "CH7 T&H","name":"CH7 T&H Battery","data_type":WittiotDataTypes.BATTERY_BINARY},
+        TYPE_TEMPCH8_BATT : {"dev_type": "CH8 T&H","name":"CH8 T&H Battery","data_type":WittiotDataTypes.BATTERY_BINARY},
         TYPE_SOILCH1_BATT : {"dev_type": "CH1 Soil","name":"CH1 Soil Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_SOILCH2_BATT : {"dev_type": "CH2 Soil","name":"CH2 Soil Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_SOILCH3_BATT : {"dev_type": "CH3 Soil","name":"CH3 Soil Battery","data_type":WittiotDataTypes.BATTERY},
@@ -488,14 +489,6 @@ class API:
         else:
             val="Raining"
         return val
-    def val_tobattery_binary(self,val):
-        if val=="" or val =="--" or val =="--.-":
-            return val
-        if val=="0":
-            val="Normal"
-        else:
-            val="Low"
-        return val
     def val_tobattery(self,val,unit,nty):
         if val=="" or val =="--" or val =="--.-":
             return val
@@ -537,7 +530,6 @@ class API:
             val=float(val)
         else:
             return ""
-        val=float(val)
         if unit=="0":
             val=round((val/ 33.86388),2)
         elif unit=="1":
@@ -656,6 +648,16 @@ class API:
             val
         else:
             val=round(( val / 0.53996 * 0.62137 ),1)
+        return val
+    def val_tobattery_binary(self,val,ld_tempch,ld_humich):
+        if val=="" or val =="--" or val =="--.-":
+            return val
+        if ld_tempch in ["None", "--", "", "--.-", "---.-" "--.--"] and ld_humich in ["None", "--", "", "--.-", "---.-" "--.--"] :
+            return "--"
+        if val=="0":
+            val="Normal"
+        else:
+            val="Low"
         return val
     async def request_loc_allinfo(self,) -> List[Dict[str, Any]]:
         res=await self._request_loc_allinfo()
@@ -777,6 +779,10 @@ class API:
         ld_co2_pm4= ''
         ld_co2_pm424= ''
         ld_co2_pm4_AQI=''
+        ld_co2_pm1_24 =''
+        ld_co2_pm4_24 =''
+        ld_co2_pm25_24=''
+        ld_co2_pm10_24=''
         
         ld_con_batt= ''
         ld_con_batt_volt= ''
@@ -915,6 +921,10 @@ class API:
              ld_co2_pm4= res_data["co2"][0].get("PM4", "--")
              ld_co2_pm424= res_data["co2"][0].get("PM4_24HAQI", "--")
              ld_co2_pm4_AQI=res_data["co2"][0].get("PM4_RealAQI", "--")
+             ld_co2_pm1_24 =res_data["co2"][0].get("PM1_24H", "--")
+             ld_co2_pm4_24 =res_data["co2"][0].get("PM4_24H", "--")
+             ld_co2_pm25_24=res_data["co2"][0].get("PM25_24H", "--")
+             ld_co2_pm10_24=res_data["co2"][0].get("PM10_24H", "--")
 
         if "ch_pm25" in res_data:
             for index in range(len(res_data["ch_pm25"])):
@@ -1013,7 +1023,7 @@ class API:
         mac=res_mac["mac"]
 
 
-
+        
         # locval_totemp
         # locval_tohumi
         # locval_topress
@@ -1094,6 +1104,10 @@ class API:
             "pm4_co2":ld_co2_pm4,
             "pm4_24h_co2":ld_co2_pm424,
             "pm4_aqi_co2":ld_co2_pm4_AQI,
+            "pm1_24h_co2_add":ld_co2_pm1_24,
+            "pm4_24h_co2_add":ld_co2_pm4_24,
+            "pm25_24h_co2_add":ld_co2_pm25_24,
+            "pm10_24h_co2_add":ld_co2_pm10_24,
             "tf_co2":self.locval_totemp(ld_co2_tf,unit_temp),
             "humi_co2":self.locval_tohumi(ld_co2_humi),
             "lightning":self.locval_tolinghtdis(ld_lightning,unit_wind),
@@ -1175,14 +1189,14 @@ class API:
             "leak_ch2_batt":self.val_tobattery(ld_sen_batt[28],"","1"),
             "leak_ch3_batt":self.val_tobattery(ld_sen_batt[29],"","1"),
             "leak_ch4_batt":self.val_tobattery(ld_sen_batt[30],"","1"),
-            "temph_ch1_batt":self.val_tobattery_binary(ld_sen_batt[6] ),
-            "temph_ch2_batt":self.val_tobattery_binary(ld_sen_batt[7] ),
-            "temph_ch3_batt":self.val_tobattery_binary(ld_sen_batt[8] ),
-            "temph_ch4_batt":self.val_tobattery_binary(ld_sen_batt[9] ),
-            "temph_ch5_batt":self.val_tobattery_binary(ld_sen_batt[10]),
-            "temph_ch6_batt":self.val_tobattery_binary(ld_sen_batt[11]),
-            "temph_ch7_batt":self.val_tobattery_binary(ld_sen_batt[12]),
-            "temph_ch8_batt":self.val_tobattery_binary(ld_sen_batt[13]),
+            "temph_ch1_batt":self.val_tobattery_binary(ld_sen_batt[6] ,ld_tempch[0],ld_humich[0]),
+            "temph_ch2_batt":self.val_tobattery_binary(ld_sen_batt[7] ,ld_tempch[1],ld_humich[1]),
+            "temph_ch3_batt":self.val_tobattery_binary(ld_sen_batt[8] ,ld_tempch[2],ld_humich[2]),
+            "temph_ch4_batt":self.val_tobattery_binary(ld_sen_batt[9] ,ld_tempch[3],ld_humich[3]),
+            "temph_ch5_batt":self.val_tobattery_binary(ld_sen_batt[10],ld_tempch[4],ld_humich[4]),
+            "temph_ch6_batt":self.val_tobattery_binary(ld_sen_batt[11],ld_tempch[5],ld_humich[5]),
+            "temph_ch7_batt":self.val_tobattery_binary(ld_sen_batt[12],ld_tempch[6],ld_humich[6]),
+            "temph_ch8_batt":self.val_tobattery_binary(ld_sen_batt[13],ld_tempch[7],ld_humich[7]),
             "Soilmoisture_ch1_batt":self.val_tobattery(ld_sen_batt[14],"","1"),
             "Soilmoisture_ch2_batt":self.val_tobattery(ld_sen_batt[15],"","1"),
             "Soilmoisture_ch3_batt":self.val_tobattery(ld_sen_batt[16],"","1"),
