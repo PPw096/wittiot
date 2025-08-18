@@ -5,7 +5,7 @@ from datetime import date
 import enum
 from http.client import SWITCHING_PROTOCOLS
 import logging
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, Dict, List,Union, Optional, cast
 
 from aiohttp import ClientSession, ClientTimeout
 from aiohttp.client_exceptions import ClientError
@@ -27,6 +27,7 @@ GW11268_API_SENID_1		 = "get_sensors_info?page=1"
 GW11268_API_SENID_2		 = "get_sensors_info?page=2"
 GW11268_API_SYS = "get_device_info"
 GW11268_API_MAC = "get_network_info"
+GW11268_API_IOTINFO = "get_iot_device_list"
 
 DEFAULT_LIMIT = 288
 DEFAULT_TIMEOUT = 20
@@ -395,7 +396,9 @@ class API:
 
 
     async def _request_data(
-        self, url: str
+        self, 
+        url: str,
+        ignore_errors: tuple = (404, 405)
     ) -> List[Dict[str, Any]]:
         """Make a request against the API."""
         use_running_session = self._session and not self._session.closed
@@ -406,6 +409,8 @@ class API:
         assert session
         # print(url)
         # print(kwargs)
+        # 先检查接口是否可用
+        
         try:
             async with session.request("get", url) as resp:
                 resp.raise_for_status()
@@ -413,12 +418,73 @@ class API:
                 # print(data)
         except ClientError as err:
             # print(err)
+            # 检查错误状态码是否在忽略列表中
+            if hasattr(err, 'status') and err.status in ignore_errors:
+                self._logger.debug("Endpoint not available (ignored): %s, Error: %s", url, err)
+                return []
             raise RequestError(f"Error requesting data from {url}: {err}") from err
         finally:
             if not use_running_session:
                 await session.close()
         self._logger.debug("_request_data Received data for %s: %s", url, data)
         return cast(List[Dict[str, Any]], data)
+    async def is_endpoint_available(self, url: str) -> bool:
+        """检查设备接口是否可用"""
+        use_running_session = self._session and not self._session.closed
+        if use_running_session:
+            session = self._session
+        else:
+            session = ClientSession(timeout=ClientTimeout(total=DEFAULT_TIMEOUT))
+
+        try:
+            async with session.head(url) as resp:
+                return resp.status == 200
+        finally:
+            if not use_running_session:
+                await session.close()
+    async def _post_data(
+        self, 
+        url: str,
+        payload: Optional[Dict[str, Any]] = None,
+        params: Optional[Dict[str, Any]] = None
+    ) -> Union[List[Dict[str, Any]], Dict[str, Any]]:
+        """Make a POST request against the API."""
+        use_running_session = self._session and not self._session.closed
+        if use_running_session:
+            session = self._session
+        else:
+            session = ClientSession(timeout=ClientTimeout(total=DEFAULT_TIMEOUT))
+        assert session
+
+        # 打印调试信息（与GET方法保持相同风格）
+        self._logger.debug("POST Request to %s", url)
+        self._logger.debug("POST Payload: %s", payload)
+        self._logger.debug("POST Params: %s", params)
+
+        try:
+            # 准备请求参数
+            request_kwargs = {}
+            if payload:
+                request_kwargs["json"] = payload
+            if params:
+                request_kwargs["params"] = params
+
+            # 发送POST请求
+            async with session.request("POST", url, **request_kwargs) as resp:
+                resp.raise_for_status()
+                data = await resp.json(content_type=None)
+                self._logger.debug("POST Response from %s: %s", url, data)
+                return data
+
+        except ClientError as err:
+            error_msg = f"Error POSTing data to {url}: {err}"
+            self._logger.error(error_msg, exc_info=True)
+            raise RequestError(error_msg) from err
+
+        finally:
+            # 会话关闭逻辑保持相同
+            if not use_running_session:
+                await session.close()
 
     async def _request_loc_batt1(self) -> List[Dict[str, Any]]:
         url = f"http://{self._ip}/{GW11268_API_SENID_1}"
@@ -445,6 +511,10 @@ class API:
     async def _request_loc_unit(self) -> List[Dict[str, Any]]:
         url = f"http://{self._ip}/{GW11268_API_UNIT}"
         return await self._request_data(url)
+    async def _request_loc_iotlist(self) -> List[Dict[str, Any]]:
+        url = f"http://{self._ip}/{GW11268_API_IOTINFO}"
+        val=await self._request_data(url)
+        return self.extract_device_data(val)
     def is_valid_float(self,val):
         try:
             float(val)  # 尝试转换 
@@ -659,6 +729,53 @@ class API:
         else:
             val="Low"
         return val
+    def extract_device_data(self,response: dict) -> dict[int, dict]:
+        """
+        从 API 响应中提取设备数据
+        :param response: API 返回的原始响应字典
+        :return: 以设备ID为键的字典包含设备数据
+        """
+        #print(response)
+        # 1. 验证响应结构
+        if "command" not in response:
+            raise ValueError("无效的API响应: 缺少 'command' 字段")
+
+        # 2. 提取设备列表
+        devices = response["command"]
+
+        # 3. 创建以设备ID为键的字典
+        device_data = {}
+        
+        for device in devices:
+            # 提取设备ID作为键
+            device_id = "iotdevice_"+format(device["id"], 'X')
+            model_name=""
+            if device["model"] ==1:
+                model_name="WFC01"
+            elif device["model"] ==2:
+                model_name="AC1100"
+            elif device["model"] ==3:
+                model_name="WFC02"
+            rfnet_state=""
+            if device["rfnet_state"] ==1:
+                rfnet_state="online"
+            elif device["rfnet_state"] ==0:
+                rfnet_state="offline"
+            # 定义需要过滤的无效值集合
+            invalid_values = {"None", "--", "---", "----", "", "--.-", "---.-", "--.--", None}
+            device_info = {
+                "model": model_name,
+                "version": device["ver"],
+                "rfnet_state": rfnet_state,
+                "battery": self.val_tobattery(device["battery"], "", "1"),
+                "signal": device["signal"]
+            }
+            # 使用字典推导式进行过滤
+            device_data[device_id] = {
+                k: v for k, v in device_info.items() 
+                if v not in invalid_values
+            }
+        return device_data
     async def request_loc_allinfo(self,) -> List[Dict[str, Any]]:
         res=await self._request_loc_allinfo()
         return res
@@ -799,7 +916,8 @@ class API:
         res_sys = await self._request_loc_sys()
         res_mac = await self._request_loc_mac()
 
-        # print(res_data )
+        res_iotlist = await self._request_loc_iotlist()
+        #print(res_iotlist )
         # print(res_info )
         # print(res_unit )
         # print(res_batt1 )
@@ -1233,10 +1351,11 @@ class API:
             "lds_ch2_batt":self.val_tobattery(ld_sen_batt[67],"","1"),
             "lds_ch3_batt":self.val_tobattery(ld_sen_batt[68],"","1"),
             "lds_ch4_batt":self.val_tobattery(ld_sen_batt[69],"","1"),
-
+            "iot_list": res_iotlist
         }
+        # hex_str = format(255, 'X')
         # 删除值为指定字符串的键值对
-        keys_to_remove = [key for key, val in list(resjson.items()) if val in ["None", "--", "----", "", "--.-", "---.-" "--.--"]]
+        keys_to_remove = [key for key, val in list(resjson.items()) if val in ["None", "--","---", "----", "", "--.-", "---.-", "--.--",None, []]]
 
         for key in keys_to_remove:
             del resjson[key]
