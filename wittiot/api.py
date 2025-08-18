@@ -1236,7 +1236,7 @@ class API:
 
         }
         # 删除值为指定字符串的键值对
-        keys_to_remove = [key for key, val in list(resjson.items()) if val in ["None", "--", "", "--.-", "---.-" "--.--"]]
+        keys_to_remove = [key for key, val in list(resjson.items()) if val in ["None", "--", "----", "", "--.-", "---.-" "--.--"]]
 
         for key in keys_to_remove:
             del resjson[key]
