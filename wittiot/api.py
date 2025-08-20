@@ -28,6 +28,7 @@ GW11268_API_SENID_2		 = "get_sensors_info?page=2"
 GW11268_API_SYS = "get_device_info"
 GW11268_API_MAC = "get_network_info"
 GW11268_API_IOTINFO = "get_iot_device_list"
+GW11268_API_READIOT = "parse_quick_cmd_iot"
 
 DEFAULT_LIMIT = 288
 DEFAULT_TIMEOUT = 20
@@ -77,6 +78,10 @@ TYPE_PM25CH1 = "pm25_ch1"
 TYPE_PM25CH2 = "pm25_ch2"
 TYPE_PM25CH3 = "pm25_ch3"
 TYPE_PM25CH4 = "pm25_ch4"
+TYPE_PM2524HCH1 = "pm25_24h_ch1"
+TYPE_PM2524HCH2 = "pm25_24h_ch2"
+TYPE_PM2524HCH3 = "pm25_24h_ch3"
+TYPE_PM2524HCH4 = "pm25_24h_ch4"
 TYPE_PM25RTAQICH1 = "pm25_aqi_ch1"
 TYPE_PM25RTAQICH2 = "pm25_aqi_ch2"
 TYPE_PM25RTAQICH3 = "pm25_aqi_ch3"
@@ -167,10 +172,14 @@ TYPE_LDSAIRCH1 = "lds_air_ch1"
 TYPE_LDSAIRCH2 = "lds_air_ch2"
 TYPE_LDSAIRCH3 = "lds_air_ch3"
 TYPE_LDSAIRCH4 = "lds_air_ch4"
-TYPE_LDSDEPCH1 = "lds_dep_ch1"
-TYPE_LDSDEPCH2 = "lds_dep_ch2"
-TYPE_LDSDEPCH3 = "lds_dep_ch3"
-TYPE_LDSDEPCH4 = "lds_dep_ch4"
+TYPE_LDSDEPCH1 = "lds_depth_ch1"
+TYPE_LDSDEPCH2 = "lds_depth_ch2"
+TYPE_LDSDEPCH3 = "lds_depth_ch3"
+TYPE_LDSDEPCH4 = "lds_depth_ch4"
+TYPE_LDSHEIGHTCH1 = "lds_height_ch1"
+TYPE_LDSHEIGHTCH2 = "lds_height_ch2"
+TYPE_LDSHEIGHTCH3 = "lds_height_ch3"
+TYPE_LDSHEIGHTCH4 = "lds_height_ch4"
 TYPE_LDSHEATCH1 = "lds_heat_ch1"
 TYPE_LDSHEATCH2 = "lds_heat_ch2"
 TYPE_LDSHEATCH3 = "lds_heat_ch3"
@@ -229,6 +238,133 @@ TYPE_LDSCH2_BATT = "lds_ch2_batt"
 TYPE_LDSCH3_BATT = "lds_ch3_batt"
 TYPE_LDSCH4_BATT = "lds_ch4_batt"
 
+TYPE_PM25CH1_SIGNAL = "pm25_ch1_signal"
+TYPE_PM25CH2_SIGNAL = "pm25_ch2_signal"
+TYPE_PM25CH3_SIGNAL = "pm25_ch3_signal"
+TYPE_PM25CH4_SIGNAL = "pm25_ch4_signal"
+TYPE_LEAKCH1_SIGNAL = "leak_ch1_signal"
+TYPE_LEAKCH2_SIGNAL = "leak_ch2_signal"
+TYPE_LEAKCH3_SIGNAL = "leak_ch3_signal"
+TYPE_LEAKCH4_SIGNAL = "leak_ch4_signal"
+TYPE_TEMPCH1_SIGNAL = "temph_ch1_signal"
+TYPE_TEMPCH2_SIGNAL = "temph_ch2_signal"
+TYPE_TEMPCH3_SIGNAL = "temph_ch3_signal"
+TYPE_TEMPCH4_SIGNAL = "temph_ch4_signal"
+TYPE_TEMPCH5_SIGNAL = "temph_ch5_signal"
+TYPE_TEMPCH6_SIGNAL = "temph_ch6_signal"
+TYPE_TEMPCH7_SIGNAL = "temph_ch7_signal"
+TYPE_TEMPCH8_SIGNAL = "temph_ch8_signal"
+TYPE_SOILCH1_SIGNAL = "Soilmoisture_ch1_signal"
+TYPE_SOILCH2_SIGNAL = "Soilmoisture_ch2_signal"
+TYPE_SOILCH3_SIGNAL = "Soilmoisture_ch3_signal"
+TYPE_SOILCH4_SIGNAL = "Soilmoisture_ch4_signal"
+TYPE_SOILCH5_SIGNAL = "Soilmoisture_ch5_signal"
+TYPE_SOILCH6_SIGNAL = "Soilmoisture_ch6_signal"
+TYPE_SOILCH7_SIGNAL = "Soilmoisture_ch7_signal"
+TYPE_SOILCH8_SIGNAL = "Soilmoisture_ch8_signal"
+TYPE_SOILCH9_SIGNAL = "Soilmoisture_ch9_signal"
+TYPE_SOILCH10_SIGNAL = "Soilmoisture_ch10_signal"
+TYPE_SOILCH11_SIGNAL = "Soilmoisture_ch11_signal"
+TYPE_SOILCH12_SIGNAL = "Soilmoisture_ch12_signal"
+TYPE_SOILCH13_SIGNAL = "Soilmoisture_ch13_signal"
+TYPE_SOILCH14_SIGNAL = "Soilmoisture_ch14_signal"
+TYPE_SOILCH15_SIGNAL = "Soilmoisture_ch15_signal"
+TYPE_SOILCH16_SIGNAL = "Soilmoisture_ch16_signal"
+TYPE_ONLYTEMPCH1_SIGNAL = "tf_ch1_signal"
+TYPE_ONLYTEMPCH2_SIGNAL = "tf_ch2_signal"
+TYPE_ONLYTEMPCH3_SIGNAL = "tf_ch3_signal"
+TYPE_ONLYTEMPCH4_SIGNAL = "tf_ch4_signal"
+TYPE_ONLYTEMPCH5_SIGNAL = "tf_ch5_signal"
+TYPE_ONLYTEMPCH6_SIGNAL = "tf_ch6_signal"
+TYPE_ONLYTEMPCH7_SIGNAL = "tf_ch7_signal"
+TYPE_ONLYTEMPCH8_SIGNAL = "tf_ch8_signal"
+TYPE_LEAFCH1_SIGNAL = "leaf_ch1_signal"
+TYPE_LEAFCH2_SIGNAL = "leaf_ch2_signal"
+TYPE_LEAFCH3_SIGNAL = "leaf_ch3_signal"
+TYPE_LEAFCH4_SIGNAL = "leaf_ch4_signal"
+TYPE_LEAFCH5_SIGNAL = "leaf_ch5_signal"
+TYPE_LEAFCH6_SIGNAL = "leaf_ch6_signal"
+TYPE_LEAFCH7_SIGNAL = "leaf_ch7_signal"
+TYPE_LEAFCH8_SIGNAL = "leaf_ch8_signal"
+TYPE_LDSCH1_SIGNAL = "lds_ch1_signal"
+TYPE_LDSCH2_SIGNAL = "lds_ch2_signal"
+TYPE_LDSCH3_SIGNAL = "lds_ch3_signal"
+TYPE_LDSCH4_SIGNAL = "lds_ch4_signal"
+
+TYPE_PM25CH1_RSSI = "pm25_ch1_rssi"
+TYPE_PM25CH2_RSSI = "pm25_ch2_rssi"
+TYPE_PM25CH3_RSSI = "pm25_ch3_rssi"
+TYPE_PM25CH4_RSSI = "pm25_ch4_rssi"
+TYPE_LEAKCH1_RSSI = "leak_ch1_rssi"
+TYPE_LEAKCH2_RSSI = "leak_ch2_rssi"
+TYPE_LEAKCH3_RSSI = "leak_ch3_rssi"
+TYPE_LEAKCH4_RSSI = "leak_ch4_rssi"
+TYPE_TEMPCH1_RSSI = "temph_ch1_rssi"
+TYPE_TEMPCH2_RSSI = "temph_ch2_rssi"
+TYPE_TEMPCH3_RSSI = "temph_ch3_rssi"
+TYPE_TEMPCH4_RSSI = "temph_ch4_rssi"
+TYPE_TEMPCH5_RSSI = "temph_ch5_rssi"
+TYPE_TEMPCH6_RSSI = "temph_ch6_rssi"
+TYPE_TEMPCH7_RSSI = "temph_ch7_rssi"
+TYPE_TEMPCH8_RSSI = "temph_ch8_rssi"
+TYPE_SOILCH1_RSSI = "Soilmoisture_ch1_rssi"
+TYPE_SOILCH2_RSSI = "Soilmoisture_ch2_rssi"
+TYPE_SOILCH3_RSSI = "Soilmoisture_ch3_rssi"
+TYPE_SOILCH4_RSSI = "Soilmoisture_ch4_rssi"
+TYPE_SOILCH5_RSSI = "Soilmoisture_ch5_rssi"
+TYPE_SOILCH6_RSSI = "Soilmoisture_ch6_rssi"
+TYPE_SOILCH7_RSSI = "Soilmoisture_ch7_rssi"
+TYPE_SOILCH8_RSSI = "Soilmoisture_ch8_rssi"
+TYPE_SOILCH9_RSSI = "Soilmoisture_ch9_rssi"
+TYPE_SOILCH10_RSSI = "Soilmoisture_ch10_rssi"
+TYPE_SOILCH11_RSSI = "Soilmoisture_ch11_rssi"
+TYPE_SOILCH12_RSSI = "Soilmoisture_ch12_rssi"
+TYPE_SOILCH13_RSSI = "Soilmoisture_ch13_rssi"
+TYPE_SOILCH14_RSSI = "Soilmoisture_ch14_rssi"
+TYPE_SOILCH15_RSSI = "Soilmoisture_ch15_rssi"
+TYPE_SOILCH16_RSSI = "Soilmoisture_ch16_rssi"
+TYPE_ONLYTEMPCH1_RSSI = "tf_ch1_rssi"
+TYPE_ONLYTEMPCH2_RSSI = "tf_ch2_rssi"
+TYPE_ONLYTEMPCH3_RSSI = "tf_ch3_rssi"
+TYPE_ONLYTEMPCH4_RSSI = "tf_ch4_rssi"
+TYPE_ONLYTEMPCH5_RSSI = "tf_ch5_rssi"
+TYPE_ONLYTEMPCH6_RSSI = "tf_ch6_rssi"
+TYPE_ONLYTEMPCH7_RSSI = "tf_ch7_rssi"
+TYPE_ONLYTEMPCH8_RSSI = "tf_ch8_rssi"
+TYPE_LEAFCH1_RSSI = "leaf_ch1_rssi"
+TYPE_LEAFCH2_RSSI = "leaf_ch2_rssi"
+TYPE_LEAFCH3_RSSI = "leaf_ch3_rssi"
+TYPE_LEAFCH4_RSSI = "leaf_ch4_rssi"
+TYPE_LEAFCH5_RSSI = "leaf_ch5_rssi"
+TYPE_LEAFCH6_RSSI = "leaf_ch6_rssi"
+TYPE_LEAFCH7_RSSI = "leaf_ch7_rssi"
+TYPE_LEAFCH8_RSSI = "leaf_ch8_rssi"
+TYPE_LDSCH1_RSSI = "lds_ch1_rssi"
+TYPE_LDSCH2_RSSI = "lds_ch2_rssi"
+TYPE_LDSCH3_RSSI = "lds_ch3_rssi"
+TYPE_LDSCH4_RSSI = "lds_ch4_rssi"
+
+iotMap = {
+		   1: 'WFC01',
+		   2: 'AC1100',
+		   3: 'WFC02',
+}
+runMap = {
+	    'WFC01': 'water_running',
+		'WFC02': 'water_running',
+		'AC1100': 'ac_running',
+ }
+formatDataMap = {
+			    'WFC01': ['happen_water', 'water_total', 'flow_velocity', 'water_action', 'water_temp'],
+			    'WFC02': ['happen_water', 'wfc02_total', 'wfc02_flow_velocity', 'water_action', 'water_temp'],
+			    'AC1100': ['happen_elect', 'elect_total', 'realtime_power', 'ac_action', 'ac_voltage'],
+}
+wfcMap = {
+		  'WFC01': ['rssi', 'flow_velocity', 'water_status', 'water_total', 'wfc01batt', ],
+		  'WFC02': ['wfc02rssi', 'wfc02_flow_velocity', 'wfc02_status', 'wfc02_total', 'wfc02batt', ],
+		  'AC1100': ['rssi']
+}
+
 class WittiotDataTypes(enum.Enum):
     """Wittiot Data types."""
     TEMPERATURE=1
@@ -240,6 +376,8 @@ class WittiotDataTypes(enum.Enum):
     DISTANCE = 7
     HEAT = 8
     BATTERY_BINARY=9
+    SIGNAL = 10
+    RSSI = 11
 
 
 
@@ -251,6 +389,10 @@ class MultiSensorInfo:
         TYPE_PM25CH2 : {"dev_type": "CH2 PM25","name":"CH2 PM2.5","data_type":WittiotDataTypes.PM25},
         TYPE_PM25CH3 : {"dev_type": "CH3 PM25","name":"CH3 PM2.5","data_type":WittiotDataTypes.PM25},
         TYPE_PM25CH4 : {"dev_type": "CH4 PM25","name":"CH4 PM2.5","data_type":WittiotDataTypes.PM25},
+        TYPE_PM2524HCH1 : {"dev_type": "CH1 PM25","name":"CH1 24H Avg PM2.5","data_type":WittiotDataTypes.PM25},
+        TYPE_PM2524HCH2 : {"dev_type": "CH2 PM25","name":"CH2 24H Avg PM2.5","data_type":WittiotDataTypes.PM25},
+        TYPE_PM2524HCH3 : {"dev_type": "CH3 PM25","name":"CH3 24H Avg PM2.5","data_type":WittiotDataTypes.PM25},
+        TYPE_PM2524HCH4 : {"dev_type": "CH4 PM25","name":"CH4 24H Avg PM2.5","data_type":WittiotDataTypes.PM25},
         TYPE_PM25RTAQICH1 : {"dev_type": "CH1 PM25","name":"CH1 PM2.5 AQI","data_type":WittiotDataTypes.AQI},
         TYPE_PM25RTAQICH2 : {"dev_type": "CH2 PM25","name":"CH2 PM2.5 AQI","data_type":WittiotDataTypes.AQI},
         TYPE_PM25RTAQICH3 : {"dev_type": "CH3 PM25","name":"CH3 PM2.5 AQI","data_type":WittiotDataTypes.AQI},
@@ -319,10 +461,121 @@ class MultiSensorInfo:
         TYPE_LDSDEPCH2 : {"dev_type": "CH2 Lds","name":"CH2 Depth","data_type":WittiotDataTypes.DISTANCE},
         TYPE_LDSDEPCH3 : {"dev_type": "CH3 Lds","name":"CH3 Depth","data_type":WittiotDataTypes.DISTANCE},
         TYPE_LDSDEPCH4 : {"dev_type": "CH4 Lds","name":"CH4 Depth","data_type":WittiotDataTypes.DISTANCE},
+        TYPE_LDSHEIGHTCH1 : {"dev_type": "CH1 Lds","name":"CH1 Total Height","data_type":WittiotDataTypes.DISTANCE},
+        TYPE_LDSHEIGHTCH2 : {"dev_type": "CH2 Lds","name":"CH2 Total Height","data_type":WittiotDataTypes.DISTANCE},
+        TYPE_LDSHEIGHTCH3 : {"dev_type": "CH3 Lds","name":"CH3 Total Height","data_type":WittiotDataTypes.DISTANCE},
+        TYPE_LDSHEIGHTCH4 : {"dev_type": "CH4 Lds","name":"CH4 Total Height","data_type":WittiotDataTypes.DISTANCE},
         TYPE_LDSHEATCH1 : {"dev_type": "CH1 Lds","name":"CH1 Heater-on Counter","data_type":WittiotDataTypes.HEAT},
         TYPE_LDSHEATCH2 : {"dev_type": "CH2 Lds","name":"CH2 Heater-on Counter","data_type":WittiotDataTypes.HEAT},
         TYPE_LDSHEATCH3 : {"dev_type": "CH3 Lds","name":"CH3 Heater-on Counter","data_type":WittiotDataTypes.HEAT},
         TYPE_LDSHEATCH4 : {"dev_type": "CH4 Lds","name":"CH4 Heater-on Counter","data_type":WittiotDataTypes.HEAT},
+        
+        TYPE_PM25CH1_SIGNAL : {"dev_type": "CH1 PM25","name":"CH1 PM2.5 Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_PM25CH2_SIGNAL : {"dev_type": "CH2 PM25","name":"CH2 PM2.5 Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_PM25CH3_SIGNAL : {"dev_type": "CH3 PM25","name":"CH3 PM2.5 Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_PM25CH4_SIGNAL : {"dev_type": "CH4 PM25","name":"CH4 PM2.5 Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_LEAKCH1_SIGNAL : {"dev_type": "CH1 LEAK","name":"CH1 LEAK Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_LEAKCH2_SIGNAL : {"dev_type": "CH2 LEAK","name":"CH2 LEAK Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_LEAKCH3_SIGNAL : {"dev_type": "CH3 LEAK","name":"CH3 LEAK Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_LEAKCH4_SIGNAL : {"dev_type": "CH4 LEAK","name":"CH4 LEAK Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_TEMPCH1_SIGNAL : {"dev_type": "CH1 T&H","name":"CH1 T&H Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_TEMPCH2_SIGNAL : {"dev_type": "CH2 T&H","name":"CH2 T&H Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_TEMPCH3_SIGNAL : {"dev_type": "CH3 T&H","name":"CH3 T&H Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_TEMPCH4_SIGNAL : {"dev_type": "CH4 T&H","name":"CH4 T&H Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_TEMPCH5_SIGNAL : {"dev_type": "CH5 T&H","name":"CH5 T&H Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_TEMPCH6_SIGNAL : {"dev_type": "CH6 T&H","name":"CH6 T&H Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_TEMPCH7_SIGNAL : {"dev_type": "CH7 T&H","name":"CH7 T&H Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_TEMPCH8_SIGNAL : {"dev_type": "CH8 T&H","name":"CH8 T&H Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_SOILCH1_SIGNAL : {"dev_type": "CH1 Soil","name":"CH1 Soil Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_SOILCH2_SIGNAL : {"dev_type": "CH2 Soil","name":"CH2 Soil Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_SOILCH3_SIGNAL : {"dev_type": "CH3 Soil","name":"CH3 Soil Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_SOILCH4_SIGNAL : {"dev_type": "CH4 Soil","name":"CH4 Soil Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_SOILCH5_SIGNAL : {"dev_type": "CH5 Soil","name":"CH5 Soil Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_SOILCH6_SIGNAL : {"dev_type": "CH6 Soil","name":"CH6 Soil Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_SOILCH7_SIGNAL : {"dev_type": "CH7 Soil","name":"CH7 Soil Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_SOILCH8_SIGNAL : {"dev_type": "CH8 Soil","name":"CH8 Soil Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_SOILCH9_SIGNAL : {"dev_type": "CH9 Soil","name":"CH9 Soil Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_SOILCH10_SIGNAL : {"dev_type": "CH10 Soil","name":"CH10 Soil Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_SOILCH11_SIGNAL : {"dev_type": "CH11 Soil","name":"CH11 Soil Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_SOILCH12_SIGNAL : {"dev_type": "CH12 Soil","name":"CH12 Soil Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_SOILCH13_SIGNAL : {"dev_type": "CH13 Soil","name":"CH13 Soil Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_SOILCH14_SIGNAL : {"dev_type": "CH14 Soil","name":"CH14 Soil Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_SOILCH15_SIGNAL : {"dev_type": "CH15 Soil","name":"CH15 Soil Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_SOILCH16_SIGNAL : {"dev_type": "CH16 Soil","name":"CH16 Soil Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_ONLYTEMPCH1_SIGNAL : {"dev_type": "CH1 Temp","name":"CH1 Temp Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_ONLYTEMPCH2_SIGNAL : {"dev_type": "CH2 Temp","name":"CH2 Temp Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_ONLYTEMPCH3_SIGNAL : {"dev_type": "CH3 Temp","name":"CH3 Temp Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_ONLYTEMPCH4_SIGNAL : {"dev_type": "CH4 Temp","name":"CH4 Temp Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_ONLYTEMPCH5_SIGNAL : {"dev_type": "CH5 Temp","name":"CH5 Temp Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_ONLYTEMPCH6_SIGNAL : {"dev_type": "CH6 Temp","name":"CH6 Temp Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_ONLYTEMPCH7_SIGNAL : {"dev_type": "CH7 Temp","name":"CH7 Temp Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_ONLYTEMPCH8_SIGNAL : {"dev_type": "CH8 Temp","name":"CH8 Temp Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_LEAFCH1_SIGNAL : {"dev_type": "CH1 Leaf","name":"CH1 Leaf Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_LEAFCH2_SIGNAL : {"dev_type": "CH2 Leaf","name":"CH2 Leaf Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_LEAFCH3_SIGNAL : {"dev_type": "CH3 Leaf","name":"CH3 Leaf Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_LEAFCH4_SIGNAL : {"dev_type": "CH4 Leaf","name":"CH4 Leaf Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_LEAFCH5_SIGNAL : {"dev_type": "CH5 Leaf","name":"CH5 Leaf Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_LEAFCH6_SIGNAL : {"dev_type": "CH6 Leaf","name":"CH6 Leaf Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_LEAFCH7_SIGNAL : {"dev_type": "CH7 Leaf","name":"CH7 Leaf Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_LEAFCH8_SIGNAL : {"dev_type": "CH8 Leaf","name":"CH8 Leaf Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_LDSCH1_SIGNAL : {"dev_type": "CH1 Lds","name":"CH1 Lds Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_LDSCH2_SIGNAL : {"dev_type": "CH2 Lds","name":"CH2 Lds Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_LDSCH3_SIGNAL : {"dev_type": "CH3 Lds","name":"CH3 Lds Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_LDSCH4_SIGNAL : {"dev_type": "CH4 Lds","name":"CH4 Lds Signal","data_type":WittiotDataTypes.SIGNAL},
+        
+        TYPE_PM25CH1_RSSI : {"dev_type": "CH1 PM25","name":"CH1 PM2.5 Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_PM25CH2_RSSI : {"dev_type": "CH2 PM25","name":"CH2 PM2.5 Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_PM25CH3_RSSI : {"dev_type": "CH3 PM25","name":"CH3 PM2.5 Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_PM25CH4_RSSI : {"dev_type": "CH4 PM25","name":"CH4 PM2.5 Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_LEAKCH1_RSSI : {"dev_type": "CH1 LEAK","name":"CH1 LEAK Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_LEAKCH2_RSSI : {"dev_type": "CH2 LEAK","name":"CH2 LEAK Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_LEAKCH3_RSSI : {"dev_type": "CH3 LEAK","name":"CH3 LEAK Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_LEAKCH4_RSSI : {"dev_type": "CH4 LEAK","name":"CH4 LEAK Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_TEMPCH1_RSSI : {"dev_type": "CH1 T&H","name":"CH1 T&H Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_TEMPCH2_RSSI : {"dev_type": "CH2 T&H","name":"CH2 T&H Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_TEMPCH3_RSSI : {"dev_type": "CH3 T&H","name":"CH3 T&H Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_TEMPCH4_RSSI : {"dev_type": "CH4 T&H","name":"CH4 T&H Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_TEMPCH5_RSSI : {"dev_type": "CH5 T&H","name":"CH5 T&H Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_TEMPCH6_RSSI : {"dev_type": "CH6 T&H","name":"CH6 T&H Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_TEMPCH7_RSSI : {"dev_type": "CH7 T&H","name":"CH7 T&H Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_TEMPCH8_RSSI : {"dev_type": "CH8 T&H","name":"CH8 T&H Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_SOILCH1_RSSI : {"dev_type": "CH1 Soil","name":"CH1 Soil Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_SOILCH2_RSSI : {"dev_type": "CH2 Soil","name":"CH2 Soil Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_SOILCH3_RSSI : {"dev_type": "CH3 Soil","name":"CH3 Soil Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_SOILCH4_RSSI : {"dev_type": "CH4 Soil","name":"CH4 Soil Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_SOILCH5_RSSI : {"dev_type": "CH5 Soil","name":"CH5 Soil Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_SOILCH6_RSSI : {"dev_type": "CH6 Soil","name":"CH6 Soil Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_SOILCH7_RSSI : {"dev_type": "CH7 Soil","name":"CH7 Soil Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_SOILCH8_RSSI : {"dev_type": "CH8 Soil","name":"CH8 Soil Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_SOILCH9_RSSI : {"dev_type": "CH9 Soil","name":"CH9 Soil Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_SOILCH10_RSSI : {"dev_type": "CH10 Soil","name":"CH10 Soil Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_SOILCH11_RSSI : {"dev_type": "CH11 Soil","name":"CH11 Soil Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_SOILCH12_RSSI : {"dev_type": "CH12 Soil","name":"CH12 Soil Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_SOILCH13_RSSI : {"dev_type": "CH13 Soil","name":"CH13 Soil Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_SOILCH14_RSSI : {"dev_type": "CH14 Soil","name":"CH14 Soil Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_SOILCH15_RSSI : {"dev_type": "CH15 Soil","name":"CH15 Soil Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_SOILCH16_RSSI : {"dev_type": "CH16 Soil","name":"CH16 Soil Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_ONLYTEMPCH1_RSSI : {"dev_type": "CH1 Temp","name":"CH1 Temp Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_ONLYTEMPCH2_RSSI : {"dev_type": "CH2 Temp","name":"CH2 Temp Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_ONLYTEMPCH3_RSSI : {"dev_type": "CH3 Temp","name":"CH3 Temp Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_ONLYTEMPCH4_RSSI : {"dev_type": "CH4 Temp","name":"CH4 Temp Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_ONLYTEMPCH5_RSSI : {"dev_type": "CH5 Temp","name":"CH5 Temp Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_ONLYTEMPCH6_RSSI : {"dev_type": "CH6 Temp","name":"CH6 Temp Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_ONLYTEMPCH7_RSSI : {"dev_type": "CH7 Temp","name":"CH7 Temp Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_ONLYTEMPCH8_RSSI : {"dev_type": "CH8 Temp","name":"CH8 Temp Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_LEAFCH1_RSSI : {"dev_type": "CH1 Leaf","name":"CH1 Leaf Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_LEAFCH2_RSSI : {"dev_type": "CH2 Leaf","name":"CH2 Leaf Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_LEAFCH3_RSSI : {"dev_type": "CH3 Leaf","name":"CH3 Leaf Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_LEAFCH4_RSSI : {"dev_type": "CH4 Leaf","name":"CH4 Leaf Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_LEAFCH5_RSSI : {"dev_type": "CH5 Leaf","name":"CH5 Leaf Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_LEAFCH6_RSSI : {"dev_type": "CH6 Leaf","name":"CH6 Leaf Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_LEAFCH7_RSSI : {"dev_type": "CH7 Leaf","name":"CH7 Leaf Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_LEAFCH8_RSSI : {"dev_type": "CH8 Leaf","name":"CH8 Leaf Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_LDSCH1_RSSI : {"dev_type": "CH1 Lds","name":"CH1 Lds Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_LDSCH2_RSSI : {"dev_type": "CH2 Lds","name":"CH2 Lds Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_LDSCH3_RSSI : {"dev_type": "CH3 Lds","name":"CH3 Lds Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_LDSCH4_RSSI : {"dev_type": "CH4 Lds","name":"CH4 Lds Rssi","data_type":WittiotDataTypes.RSSI},
+        
         TYPE_PM25CH1_BATT : {"dev_type": "CH1 PM25","name":"CH1 PM2.5 Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_PM25CH2_BATT : {"dev_type": "CH2 PM25","name":"CH2 PM2.5 Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_PM25CH3_BATT : {"dev_type": "CH3 PM25","name":"CH3 PM2.5 Battery","data_type":WittiotDataTypes.BATTERY},
@@ -394,7 +647,12 @@ class API:
         self._logger = logger
         self._session: Optional[ClientSession] = session
 
-
+    def is_valid_float(self,val):
+        try:
+            float(val)  # 尝试转换 
+            return True 
+        except (ValueError, TypeError):  # 捕获无效转换 
+            return False 
     async def _request_data(
         self, 
         url: str,
@@ -486,7 +744,42 @@ class API:
             if not use_running_session:
                 await session.close()
 
+    async def update_single_device(self, 
+        command: Dict[str, Dict[str, Any]] = None,):
+        
+        # 直接访问command列表
+        if command is None or len(command) == 0:
+            return None
+        
+        commands = command['command']
+        for i,item in enumerate(commands):
+            if item["rfnet_state"] == 0:
+                continue
+            cmd = {
+                "cmd": "read_device",
+                "id": item["id"],
+                "model": item["model"]
+            }
+            payload = {"command": [cmd]}
+            try:
+                url = f"http://{self._ip}/{GW11268_API_READIOT}"
+                response = await self._post_data(
+                    url,  # 替换为实际API端点
+                    payload=payload
+                )
+                # 3. 处理响应并更新设备状态
+                response=self.extract_device_data(response)
+                if response:
+                # 方法1: 直接更新原始项
+                    commands[i].update(response)
+            except Exception as err:
+                # 错误处理
+                print(f"更新设备状态失败: {err}")
+        return commands
+        
+        
     async def _request_loc_batt1(self) -> List[Dict[str, Any]]:
+
         url = f"http://{self._ip}/{GW11268_API_SENID_1}"
         return await self._request_data(url)
 
@@ -514,13 +807,10 @@ class API:
     async def _request_loc_iotlist(self) -> List[Dict[str, Any]]:
         url = f"http://{self._ip}/{GW11268_API_IOTINFO}"
         val=await self._request_data(url)
-        return self.extract_device_data(val)
-    def is_valid_float(self,val):
-        try:
-            float(val)  # 尝试转换 
-            return True 
-        except (ValueError, TypeError):  # 捕获无效转换 
-            return False 
+        return val
+    # self.extract_device_data(val)
+    
+    
 
     def locval_totemp(self,val,unit):
         if val=="" or val =="--" or val =="--.-":
@@ -735,47 +1025,79 @@ class API:
         :param response: API 返回的原始响应字典
         :return: 以设备ID为键的字典包含设备数据
         """
-        #print(response)
+        
         # 1. 验证响应结构
         if "command" not in response:
-            raise ValueError("无效的API响应: 缺少 'command' 字段")
+            return None
 
         # 2. 提取设备列表
         devices = response["command"]
-
-        # 3. 创建以设备ID为键的字典
-        device_data = {}
+        res= response["command"][0]
+        # print(res)
         
-        for device in devices:
-            # 提取设备ID作为键
-            device_id = "iotdevice_"+format(device["id"], 'X')
-            model_name=""
-            if device["model"] ==1:
-                model_name="WFC01"
-            elif device["model"] ==2:
-                model_name="AC1100"
-            elif device["model"] ==3:
-                model_name="WFC02"
-            rfnet_state=""
-            if device["rfnet_state"] ==1:
-                rfnet_state="online"
-            elif device["rfnet_state"] ==0:
-                rfnet_state="offline"
-            # 定义需要过滤的无效值集合
-            invalid_values = {"None", "--", "---", "----", "", "--.-", "---.-", "--.--", None}
-            device_info = {
-                "model": model_name,
-                "version": device["ver"],
-                "rfnet_state": rfnet_state,
-                "battery": self.val_tobattery(device["battery"], "", "1"),
-                "signal": device["signal"]
-            }
-            # 使用字典推导式进行过滤
-            device_data[device_id] = {
-                k: v for k, v in device_info.items() 
-                if v not in invalid_values
-            }
-        return device_data
+        iotType=""
+        isWFC=""
+        nickname=""
+        rssi=""
+        iotbatt=""
+        publish_time=""
+        iot_always_on=""
+        data_rate=""
+        run_time=""
+        data_total=""
+        iot_action=""
+        iot_running=""
+        data_val_type=""
+        data_water=""
+        data_ac=""
+        wfc02_position=""
+        
+        device_info = {}
+       
+        iotType = iotMap[res["model"]]
+        isWFC = res["model"] != 2
+        nickname=res["nickname"]
+        device_info["nickname"]=nickname
+        rssi=res[wfcMap[iotType][0]]
+        device_info["rssi"]=rssi
+        iotbatt= res[wfcMap[iotType][4]] if isWFC else  ''
+        device_info["iotbatt"]=iotbatt
+        publish_time=res["publish_time"]
+        iot_always_on=res["always_on"]
+        data_rate=res[formatDataMap[iotType][2]]
+        device_info[formatDataMap[iotType][2]]=data_rate
+        run_time=res["run_time"]
+        device_info["run_time"]=run_time
+        data_total=float(res[formatDataMap[iotType][1]])-float(res[formatDataMap[iotType][0]])
+        iot_action=res[formatDataMap[iotType][3]]
+        iot_running=res[runMap[iotType]]
+        device_info["iot_running"]=iot_running
+        data_val_type=res["val_type"]
+        run_time=res["run_time"]
+        device_info["run_time"]=run_time
+        if isWFC:
+            if formatDataMap[iotType][4] in res:
+                data_water = res[formatDataMap[iotType][4]]
+                device_info["data_water_t"]=data_water
+            if iotType == "WFC02":
+                wfc02_position=res["wfc02_position"]
+                device_info["wfc02_position"]=wfc02_position
+            device_info["velocity_total"]=data_total
+            if res["val_type"]==3:
+                data_val=round(res["val"]/10.0,1)
+            else:
+                data_val=res["val"]
+        else:
+            data_ac=res[formatDataMap[iotType][4]]
+            device_info["data_ac_v"]=data_ac
+            device_info["elect_total"]=data_total
+
+        keys_to_remove = [key for key, val in list(device_info.items()) if val in ["None", "--","---", "----", "", "--.-", "---.-", "--.--",None, []]]
+
+        for key in keys_to_remove:
+            del device_info[key]
+
+        return device_info
     async def request_loc_allinfo(self,) -> List[Dict[str, Any]]:
         res=await self._request_loc_allinfo()
         return res
@@ -850,6 +1172,11 @@ class API:
         ld_pm25ch2= ''
         ld_pm25ch3= ''
         ld_pm25ch4= ''
+        ld_pm2524hch1= ''
+        ld_pm2524hch2= ''
+        ld_pm2524hch3= ''
+        ld_pm2524hch4= ''
+        
         ld_pm25ch1_AQI= ''
         ld_pm25ch2_AQI= ''
         ld_pm25ch3_AQI= ''
@@ -875,6 +1202,7 @@ class API:
         ld_lds_airch= []
         ld_lds_depthch= []
         ld_lds_heatch= []
+        ld_lds_height=[]
         ld_co2_tf= ''
         ld_co2_humi= ''
         ld_co2_pm10= ''
@@ -907,6 +1235,8 @@ class API:
 
 
         ld_sen_batt=[]
+        ld_sen_rssi  =[]
+        ld_sen_signal=[]
         # url = f"http://{self._ip}/{GW11268_API_UNIT}"
         res_data = await self._request_loc_data()
         res_info = await self._request_loc_info()
@@ -917,7 +1247,11 @@ class API:
         res_mac = await self._request_loc_mac()
 
         res_iotlist = await self._request_loc_iotlist()
-        #print(res_iotlist )
+        
+        res_iotdata =  await self.update_single_device(res_iotlist)
+        
+        
+        # print(res_iotdata )
         # print(res_info )
         # print(res_unit )
         # print(res_batt1 )
@@ -1048,18 +1382,22 @@ class API:
             for index in range(len(res_data["ch_pm25"])):
                 if res_data["ch_pm25"][index]["channel"]=='1':
                     ld_pm25ch1=res_data["ch_pm25"][index]["PM25"]
+                    ld_pm2524hch1=res_data["ch_pm25"][index].get("PM25_24H", "--")
                     ld_pm25ch1_AQI=res_data["ch_pm25"][index]["PM25_RealAQI"]
                     ld_pm25ch1_24AQI=res_data["ch_pm25"][index]["PM25_24HAQI"]
                 elif res_data["ch_pm25"][index]["channel"]=='2':
                     ld_pm25ch2=res_data["ch_pm25"][index]["PM25"]
+                    ld_pm2524hch2=res_data["ch_pm25"][index].get("PM25_24H", "--")
                     ld_pm25ch2_AQI=res_data["ch_pm25"][index]["PM25_RealAQI"]
                     ld_pm25ch2_24AQI=res_data["ch_pm25"][index]["PM25_24HAQI"]
                 elif res_data["ch_pm25"][index]["channel"]=='3':
                     ld_pm25ch3=res_data["ch_pm25"][index]["PM25"]
+                    ld_pm2524hch3=res_data["ch_pm25"][index].get("PM25_24H", "--")
                     ld_pm25ch3_AQI=res_data["ch_pm25"][index]["PM25_RealAQI"]
                     ld_pm25ch3_24AQI=res_data["ch_pm25"][index]["PM25_24HAQI"]
                 elif res_data["ch_pm25"][index]["channel"]=='4':
                     ld_pm25ch4=res_data["ch_pm25"][index]["PM25"]
+                    ld_pm2524hch4=res_data["ch_pm25"][index].get("PM25_24H", "--")
                     ld_pm25ch4_AQI=res_data["ch_pm25"][index]["PM25_RealAQI"]
                     ld_pm25ch4_24AQI=res_data["ch_pm25"][index]["PM25_24HAQI"]
 
@@ -1082,6 +1420,7 @@ class API:
         ld_lds_airch=[]
         ld_lds_depthch=[]
         ld_lds_heatch=[]
+        ld_lds_height=[]
         for i in range(16):
             ld_soil.append("--")
             ld_tempch.append("--")
@@ -1091,6 +1430,7 @@ class API:
             ld_lds_airch.append("--")
             ld_lds_depthch.append("--")
             ld_lds_heatch.append("--")
+            ld_lds_height.append("--")
 
         if "ch_aisle" in res_data:
             for index in range(len(res_data["ch_aisle"])):
@@ -1121,19 +1461,29 @@ class API:
                 ld_lds_airch[ch]=self.locval_tolds(res_data["ch_lds"][index]["air"],unit_rain)
                 ld_lds_depthch[ch]=self.locval_tolds(res_data["ch_lds"][index]["depth"],unit_rain)
                 ld_lds_heatch[ch]=res_data["ch_lds"][index].get("total_heat", "--")
+                ld_lds_height[ch]=self.locval_tolds(res_data["ch_lds"][index].get("total_height", "--"),unit_rain)
 
         ld_sen_batt=[]
+        ld_sen_rssi  =[]
+        ld_sen_signal=[]
         for i in range(99):
             ld_sen_batt.append("--")
+            ld_sen_rssi.append("--")
+            ld_sen_signal.append("--")
 
 
         for index in range(len(res_batt1)):
             ch=int(res_batt1[index]["type"])
             ld_sen_batt[ch]=res_batt1[index]["batt"]
+            ld_sen_rssi[ch]=res_batt1[index].get("rssi", "--")
+            ld_sen_signal[ch]=res_batt1[index].get("signal", "--")
+            
 
         for index in range(len(res_batt2)):
             ch=int(res_batt2[index]["type"])
             ld_sen_batt[ch]=res_batt2[index]["batt"]
+            ld_sen_rssi[ch]=res_batt2[index].get("rssi", "--")
+            ld_sen_signal[ch]=res_batt2[index].get("signal", "--")
 
 
         ver=res_info["version"][9:]
@@ -1198,6 +1548,10 @@ class API:
             "pm25_ch2":ld_pm25ch2,
             "pm25_ch3":ld_pm25ch3,
             "pm25_ch4":ld_pm25ch4,
+            "pm25_24h_ch1":ld_pm2524hch1,
+            "pm25_24h_ch2":ld_pm2524hch2,
+            "pm25_24h_ch3":ld_pm2524hch3,
+            "pm25_24h_ch4":ld_pm2524hch4,
             "pm25_aqi_ch1":ld_pm25ch1_AQI,
             "pm25_aqi_ch2":ld_pm25ch2_AQI,
             "pm25_aqi_ch3":ld_pm25ch3_AQI,
@@ -1247,6 +1601,10 @@ class API:
             "lds_heat_ch2":ld_lds_heatch[1],
             "lds_heat_ch3":ld_lds_heatch[2],
             "lds_heat_ch4":ld_lds_heatch[3],
+            "lds_height_ch1":ld_lds_height[0],
+            "lds_height_ch2":ld_lds_height[1],
+            "lds_height_ch3":ld_lds_height[2],
+            "lds_height_ch4":ld_lds_height[3],
             "temp_ch1":ld_tempch[0],
             "temp_ch2":ld_tempch[1],
             "temp_ch3":ld_tempch[2],
@@ -1298,6 +1656,112 @@ class API:
             "ver":ver,
             "devname":devname,
             "mac":mac,
+            
+            "pm25_ch1_rssi":ld_sen_rssi[22],
+            "pm25_ch2_rssi":ld_sen_rssi[23],
+            "pm25_ch3_rssi":ld_sen_rssi[24],
+            "pm25_ch4_rssi":ld_sen_rssi[25],
+            "leak_ch1_rssi":ld_sen_rssi[27],
+            "leak_ch2_rssi":ld_sen_rssi[28],
+            "leak_ch3_rssi":ld_sen_rssi[29],
+            "leak_ch4_rssi":ld_sen_rssi[30],
+            "temph_ch1_rssi":ld_sen_rssi[6],
+            "temph_ch2_rssi":ld_sen_rssi[7],
+            "temph_ch3_rssi":ld_sen_rssi[8],
+            "temph_ch4_rssi":ld_sen_rssi[9],
+            "temph_ch5_rssi":ld_sen_rssi[10],
+            "temph_ch6_rssi":ld_sen_rssi[11],
+            "temph_ch7_rssi":ld_sen_rssi[12],
+            "temph_ch8_rssi":ld_sen_rssi[13],
+            "Soilmoisture_ch1_rssi":ld_sen_rssi[14],
+            "Soilmoisture_ch2_rssi":ld_sen_rssi[15],
+            "Soilmoisture_ch3_rssi":ld_sen_rssi[16],
+            "Soilmoisture_ch4_rssi":ld_sen_rssi[17],
+            "Soilmoisture_ch5_rssi":ld_sen_rssi[18],
+            "Soilmoisture_ch6_rssi":ld_sen_rssi[19],
+            "Soilmoisture_ch7_rssi":ld_sen_rssi[20],
+            "Soilmoisture_ch8_rssi":ld_sen_rssi[21],
+            "Soilmoisture_ch9_rssi":ld_sen_rssi[58],
+            "Soilmoisture_ch10_rssi":ld_sen_rssi[59],
+            "Soilmoisture_ch11_rssi":ld_sen_rssi[60],
+            "Soilmoisture_ch12_rssi":ld_sen_rssi[61],
+            "Soilmoisture_ch13_rssi":ld_sen_rssi[62],
+            "Soilmoisture_ch14_rssi":ld_sen_rssi[63],
+            "Soilmoisture_ch15_rssi":ld_sen_rssi[64],
+            "Soilmoisture_ch16_rssi":ld_sen_rssi[65],
+            "tf_ch1_rssi":ld_sen_rssi[31],
+            "tf_ch2_rssi":ld_sen_rssi[32],
+            "tf_ch3_rssi":ld_sen_rssi[33],
+            "tf_ch4_rssi":ld_sen_rssi[34],
+            "tf_ch5_rssi":ld_sen_rssi[35],
+            "tf_ch6_rssi":ld_sen_rssi[36],
+            "tf_ch7_rssi":ld_sen_rssi[37],
+            "tf_ch8_rssi":ld_sen_rssi[38],
+            "leaf_ch1_rssi":ld_sen_rssi[40],
+            "leaf_ch2_rssi":ld_sen_rssi[41],
+            "leaf_ch3_rssi":ld_sen_rssi[42],
+            "leaf_ch4_rssi":ld_sen_rssi[43],
+            "leaf_ch5_rssi":ld_sen_rssi[44],
+            "leaf_ch6_rssi":ld_sen_rssi[45],
+            "leaf_ch7_rssi":ld_sen_rssi[46],
+            "leaf_ch8_rssi":ld_sen_rssi[47],
+            "lds_ch1_rssi":ld_sen_rssi[66],
+            "lds_ch2_rssi":ld_sen_rssi[67],
+            "lds_ch3_rssi":ld_sen_rssi[68],
+            "lds_ch4_rssi":ld_sen_rssi[69],
+            
+            "pm25_ch1_signal":ld_sen_signal[22],
+            "pm25_ch2_signal":ld_sen_signal[23],
+            "pm25_ch3_signal":ld_sen_signal[24],
+            "pm25_ch4_signal":ld_sen_signal[25],
+            "leak_ch1_signal":ld_sen_signal[27],
+            "leak_ch2_signal":ld_sen_signal[28],
+            "leak_ch3_signal":ld_sen_signal[29],
+            "leak_ch4_signal":ld_sen_signal[30],
+            "temph_ch1_signal":ld_sen_signal[6],
+            "temph_ch2_signal":ld_sen_signal[7],
+            "temph_ch3_signal":ld_sen_signal[8],
+            "temph_ch4_signal":ld_sen_signal[9],
+            "temph_ch5_signal":ld_sen_signal[10],
+            "temph_ch6_signal":ld_sen_signal[11],
+            "temph_ch7_signal":ld_sen_signal[12],
+            "temph_ch8_signal":ld_sen_signal[13],
+            "Soilmoisture_ch1_signal":ld_sen_signal[14],
+            "Soilmoisture_ch2_signal":ld_sen_signal[15],
+            "Soilmoisture_ch3_signal":ld_sen_signal[16],
+            "Soilmoisture_ch4_signal":ld_sen_signal[17],
+            "Soilmoisture_ch5_signal":ld_sen_signal[18],
+            "Soilmoisture_ch6_signal":ld_sen_signal[19],
+            "Soilmoisture_ch7_signal":ld_sen_signal[20],
+            "Soilmoisture_ch8_signal":ld_sen_signal[21],
+            "Soilmoisture_ch9_signal":ld_sen_signal[58],
+            "Soilmoisture_ch10_signal":ld_sen_signal[59],
+            "Soilmoisture_ch11_signal":ld_sen_signal[60],
+            "Soilmoisture_ch12_signal":ld_sen_signal[61],
+            "Soilmoisture_ch13_signal":ld_sen_signal[62],
+            "Soilmoisture_ch14_signal":ld_sen_signal[63],
+            "Soilmoisture_ch15_signal":ld_sen_signal[64],
+            "Soilmoisture_ch16_signal":ld_sen_signal[65],
+            "tf_ch1_signal":ld_sen_signal[31],
+            "tf_ch2_signal":ld_sen_signal[32],
+            "tf_ch3_signal":ld_sen_signal[33],
+            "tf_ch4_signal":ld_sen_signal[34],
+            "tf_ch5_signal":ld_sen_signal[35],
+            "tf_ch6_signal":ld_sen_signal[36],
+            "tf_ch7_signal":ld_sen_signal[37],
+            "tf_ch8_signal":ld_sen_signal[38],
+            "leaf_ch1_signal":ld_sen_signal[40],
+            "leaf_ch2_signal":ld_sen_signal[41],
+            "leaf_ch3_signal":ld_sen_signal[42],
+            "leaf_ch4_signal":ld_sen_signal[43],
+            "leaf_ch5_signal":ld_sen_signal[44],
+            "leaf_ch6_signal":ld_sen_signal[45],
+            "leaf_ch7_signal":ld_sen_signal[46],
+            "leaf_ch8_signal":ld_sen_signal[47],
+            "lds_ch1_signal":ld_sen_signal[66],
+            "lds_ch2_signal":ld_sen_signal[67],
+            "lds_ch3_signal":ld_sen_signal[68],
+            "lds_ch4_signal":ld_sen_signal[69],
             # "allbatt":ld_sen_batt,
             "pm25_ch1_batt":self.val_tobattery(ld_sen_batt[22],"","1"),
             "pm25_ch2_batt":self.val_tobattery(ld_sen_batt[23],"","1"),
