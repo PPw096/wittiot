@@ -753,8 +753,8 @@ class API:
         
         commands = command['command']
         for i,item in enumerate(commands):
-            if item["rfnet_state"] == 0:
-                continue
+            # if item["rfnet_state"] == 0:
+            #     continue
             cmd = {
                 "cmd": "read_device",
                 "id": item["id"],
@@ -768,7 +768,7 @@ class API:
                     payload=payload
                 )
                 # 3. 处理响应并更新设备状态
-                response=self.extract_device_data(response)
+                response=self.extract_device_data(response,item["rfnet_state"])
                 if response:
                 # 方法1: 直接更新原始项
                     commands[i].update(response)
@@ -1019,7 +1019,7 @@ class API:
         else:
             val="Low"
         return val
-    def extract_device_data(self,response: dict) -> dict[int, dict]:
+    def extract_device_data(self,response,val) -> dict[int, dict]:
         """
         从 API 响应中提取设备数据
         :param response: API 返回的原始响应字典
@@ -1053,44 +1053,49 @@ class API:
         wfc02_position=""
         
         device_info = {}
-       
-        iotType = iotMap[res["model"]]
-        isWFC = res["model"] != 2
-        nickname=res["nickname"]
-        device_info["nickname"]=nickname
-        rssi=res[wfcMap[iotType][0]]
-        device_info["rssi"]=rssi
-        iotbatt= res[wfcMap[iotType][4]] if isWFC else  ''
-        device_info["iotbatt"]=iotbatt
-        publish_time=res["publish_time"]
-        iot_always_on=res["always_on"]
-        data_rate=res[formatDataMap[iotType][2]]
-        device_info[formatDataMap[iotType][2]]=data_rate
-        run_time=res["run_time"]
-        device_info["run_time"]=run_time
-        data_total=float(res[formatDataMap[iotType][1]])-float(res[formatDataMap[iotType][0]])
-        iot_action=res[formatDataMap[iotType][3]]
-        iot_running=res[runMap[iotType]]
-        device_info["iot_running"]=iot_running
-        data_val_type=res["val_type"]
-        run_time=res["run_time"]
-        device_info["run_time"]=run_time
-        if isWFC:
-            if formatDataMap[iotType][4] in res:
-                data_water = res[formatDataMap[iotType][4]]
-                device_info["data_water_t"]=data_water
-            if iotType == "WFC02":
-                wfc02_position=res["wfc02_position"]
-                device_info["wfc02_position"]=wfc02_position
-            device_info["velocity_total"]=data_total
-            if res["val_type"]==3:
-                data_val=round(res["val"]/10.0,1)
-            else:
-                data_val=res["val"]
+        
+        if val == 0: 
+            nickname=res["nickname"]
+            device_info["nickname"]=nickname
         else:
-            data_ac=res[formatDataMap[iotType][4]]
-            device_info["data_ac_v"]=data_ac
-            device_info["elect_total"]=data_total
+            iotType = iotMap[res["model"]]
+            isWFC = res["model"] != 2
+            nickname=res["nickname"]
+            device_info["nickname"]=nickname
+            rssi=res[wfcMap[iotType][0]]
+            device_info["rssi"]=rssi
+            iotbatt= res[wfcMap[iotType][4]] if isWFC else  ''
+            iotbatt=self.val_tobattery(iotbatt,"","1")
+            device_info["iotbatt"]=iotbatt
+            publish_time=res["publish_time"]
+            iot_always_on=res["always_on"]
+            data_rate=res[formatDataMap[iotType][2]]
+            device_info[formatDataMap[iotType][2]]=data_rate
+            run_time=res["run_time"]
+            device_info["run_time"]=run_time
+            data_total=float(res[formatDataMap[iotType][1]])-float(res[formatDataMap[iotType][0]])
+            iot_action=res[formatDataMap[iotType][3]]
+            iot_running=res[runMap[iotType]]
+            device_info["iot_running"]=iot_running
+            data_val_type=res["val_type"]
+            run_time=res["run_time"]
+            device_info["run_time"]=run_time
+            if isWFC:
+                if formatDataMap[iotType][4] in res:
+                    data_water = res[formatDataMap[iotType][4]]
+                    device_info["data_water_t"]=data_water
+                if iotType == "WFC02":
+                    wfc02_position=res["wfc02_position"]
+                    device_info["wfc02_position"]=wfc02_position
+                device_info["velocity_total"]=data_total
+                if res["val_type"]==3:
+                    data_val=round(res["val"]/10.0,1)
+                else:
+                    data_val=res["val"]
+            else:
+                data_ac=res[formatDataMap[iotType][4]]
+                device_info["data_ac_v"]=data_ac
+                device_info["elect_total"]=data_total
 
         keys_to_remove = [key for key, val in list(device_info.items()) if val in ["None", "--","---", "----", "", "--.-", "---.-", "--.--",None, []]]
 
@@ -1249,7 +1254,6 @@ class API:
         res_iotlist = await self._request_loc_iotlist()
         
         res_iotdata =  await self.update_single_device(res_iotlist)
-        
         
         # print(res_iotdata )
         # print(res_info )
@@ -1474,16 +1478,27 @@ class API:
 
         for index in range(len(res_batt1)):
             ch=int(res_batt1[index]["type"])
-            ld_sen_batt[ch]=res_batt1[index]["batt"]
-            ld_sen_rssi[ch]=res_batt1[index].get("rssi", "--")
-            ld_sen_signal[ch]=res_batt1[index].get("signal", "--")
+            if res_batt1[index]["id"] == "FFFFFFFF" or res_batt1[index]["id"] == "FFFFFFFE":
+                ld_sen_batt[ch]  ="--"
+                ld_sen_rssi[ch]  ="--"
+                ld_sen_signal[ch]="--"
+            else:
+                ld_sen_batt[ch]  =res_batt1[index]["batt"]
+                ld_sen_rssi[ch]  =res_batt1[index].get("rssi", "--")
+                ld_sen_signal[ch]=res_batt1[index].get("signal", "--")
+           
             
 
         for index in range(len(res_batt2)):
             ch=int(res_batt2[index]["type"])
-            ld_sen_batt[ch]=res_batt2[index]["batt"]
-            ld_sen_rssi[ch]=res_batt2[index].get("rssi", "--")
-            ld_sen_signal[ch]=res_batt2[index].get("signal", "--")
+            if res_batt2[index]["id"] == "FFFFFFFF" or res_batt2[index]["id"] == "FFFFFFFE":
+                ld_sen_batt[ch]  ="--"
+                ld_sen_rssi[ch]  ="--"
+                ld_sen_signal[ch]="--"
+            else:
+                ld_sen_batt[ch]  =res_batt2[index]["batt"]
+                ld_sen_rssi[ch]  =res_batt2[index].get("rssi", "--")
+                ld_sen_signal[ch]=res_batt2[index].get("signal", "--")
 
 
         ver=res_info["version"][9:]
