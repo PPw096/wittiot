@@ -238,6 +238,19 @@ TYPE_LDSCH2_BATT = "lds_ch2_batt"
 TYPE_LDSCH3_BATT = "lds_ch3_batt"
 TYPE_LDSCH4_BATT = "lds_ch4_batt"
 
+TYPE_WH85_BATT = "wh85_batt"
+TYPE_WH90_BATT = "wh90_batt"
+TYPE_WH69_BATT = "wh69_batt"
+TYPE_WH68_BATT = "wh68_batt"
+TYPE_WH40_BATT = "wh40_batt"
+TYPE_WN20_BATT = "wn20_batt"
+TYPE_WH25_BATT = "wh25_batt"
+TYPE_WH26_BATT = "wh26_batt"
+TYPE_WH80_BATT = "wh80_batt"
+TYPE_WH57_BATT = "wh57_batt"
+TYPE_WH45_BATT = "wh45_batt"
+
+
 TYPE_PM25CH1_SIGNAL = "pm25_ch1_signal"
 TYPE_PM25CH2_SIGNAL = "pm25_ch2_signal"
 TYPE_PM25CH3_SIGNAL = "pm25_ch3_signal"
@@ -290,6 +303,17 @@ TYPE_LDSCH1_SIGNAL = "lds_ch1_signal"
 TYPE_LDSCH2_SIGNAL = "lds_ch2_signal"
 TYPE_LDSCH3_SIGNAL = "lds_ch3_signal"
 TYPE_LDSCH4_SIGNAL = "lds_ch4_signal"
+TYPE_WH85_SIGNAL = "wh85_signal"
+TYPE_WH90_SIGNAL = "wh90_signal"
+TYPE_WH69_SIGNAL = "wh69_signal"
+TYPE_WH68_SIGNAL = "wh68_signal"
+TYPE_WH40_SIGNAL = "wh40_signal"
+TYPE_WN20_SIGNAL = "wn20_signal"
+TYPE_WH25_SIGNAL = "wh25_signal"
+TYPE_WH26_SIGNAL = "wh26_signal"
+TYPE_WH80_SIGNAL = "wh80_signal"
+TYPE_WH57_SIGNAL = "wh57_signal"
+TYPE_WH45_SIGNAL = "wh45_signal"
 
 TYPE_PM25CH1_RSSI = "pm25_ch1_rssi"
 TYPE_PM25CH2_RSSI = "pm25_ch2_rssi"
@@ -343,6 +367,18 @@ TYPE_LDSCH1_RSSI = "lds_ch1_rssi"
 TYPE_LDSCH2_RSSI = "lds_ch2_rssi"
 TYPE_LDSCH3_RSSI = "lds_ch3_rssi"
 TYPE_LDSCH4_RSSI = "lds_ch4_rssi"
+
+TYPE_WH85_RSSI = "wh85_rssi"
+TYPE_WH90_RSSI = "wh90_rssi"
+TYPE_WH69_RSSI = "wh69_rssi"
+TYPE_WH68_RSSI = "wh68_rssi"
+TYPE_WH40_RSSI = "wh40_rssi"
+TYPE_WN20_RSSI = "wn20_rssi"
+TYPE_WH25_RSSI = "wh25_rssi"
+TYPE_WH26_RSSI = "wh26_rssi"
+TYPE_WH80_RSSI = "wh80_rssi"
+TYPE_WH57_RSSI = "wh57_rssi"
+TYPE_WH45_RSSI = "wh45_rssi"
 
 iotMap = {
 		   1: 'WFC01',
@@ -522,6 +558,17 @@ class MultiSensorInfo:
         TYPE_LDSCH2_SIGNAL : {"dev_type": "CH2 Lds","name":"CH2 Lds Signal","data_type":WittiotDataTypes.SIGNAL},
         TYPE_LDSCH3_SIGNAL : {"dev_type": "CH3 Lds","name":"CH3 Lds Signal","data_type":WittiotDataTypes.SIGNAL},
         TYPE_LDSCH4_SIGNAL : {"dev_type": "CH4 Lds","name":"CH4 Lds Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_WH85_SIGNAL : {"dev_type": "Haptic 3-in-1","name":"Haptic 3-in-1 Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_WH90_SIGNAL : {"dev_type": "Haptic Array","name":"Haptic Array Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_WH69_SIGNAL : {"dev_type": "Sensor Array","name":"Sensor Array Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_WH68_SIGNAL : {"dev_type": "Wind Sensor","name":"Wind Sensor Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_WH40_SIGNAL : {"dev_type": "Rainfall Sensor","name":"Rainfall Sensor Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_WN20_SIGNAL : {"dev_type": "Rain Gauge Mini","name":"Rain Gauge Mini Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_WH25_SIGNAL : {"dev_type": "T&RH&P Sensor","name":"T&RH&P Sensor Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_WH26_SIGNAL : {"dev_type": "Outdoor T&RH Sensor","name":"Outdoor T&RH Sensor Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_WH80_SIGNAL : {"dev_type": "Sonic Array","name":"Sonic Array Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_WH57_SIGNAL : {"dev_type": "Lightning Sensor","name":"Lightning Sensor Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_WH45_SIGNAL : {"dev_type": "AQI Combo Sensor","name":"AQI Combo Sensor Signal","data_type":WittiotDataTypes.SIGNAL},
         
         TYPE_PM25CH1_RSSI : {"dev_type": "CH1 PM25","name":"CH1 PM2.5 Rssi","data_type":WittiotDataTypes.RSSI},
         TYPE_PM25CH2_RSSI : {"dev_type": "CH2 PM25","name":"CH2 PM2.5 Rssi","data_type":WittiotDataTypes.RSSI},
@@ -575,6 +622,17 @@ class MultiSensorInfo:
         TYPE_LDSCH2_RSSI : {"dev_type": "CH2 Lds","name":"CH2 Lds Rssi","data_type":WittiotDataTypes.RSSI},
         TYPE_LDSCH3_RSSI : {"dev_type": "CH3 Lds","name":"CH3 Lds Rssi","data_type":WittiotDataTypes.RSSI},
         TYPE_LDSCH4_RSSI : {"dev_type": "CH4 Lds","name":"CH4 Lds Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_WH85_RSSI : {"dev_type": "Haptic 3-in-1","name":"Haptic 3-in-1 Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_WH90_RSSI : {"dev_type": "Haptic Array","name":"Haptic Array Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_WH69_RSSI : {"dev_type": "Sensor Array","name":"Sensor Array Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_WH68_RSSI : {"dev_type": "Wind Sensor","name":"Wind Sensor Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_WH40_RSSI : {"dev_type": "Rainfall Sensor","name":"Rainfall Sensor Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_WN20_RSSI : {"dev_type": "Rain Gauge Mini","name":"Rain Gauge Mini Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_WH25_RSSI : {"dev_type": "T&RH&P Sensor","name":"T&RH&P Sensor Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_WH26_RSSI : {"dev_type": "Outdoor T&RH Sensor","name":"Outdoor T&RH Sensor Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_WH80_RSSI : {"dev_type": "Sonic Array","name":"Sonic Array Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_WH57_RSSI : {"dev_type": "Lightning Sensor","name":"Lightning Sensor Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_WH45_RSSI : {"dev_type": "AQI Combo Sensor","name":"AQI Combo Sensor Rssi","data_type":WittiotDataTypes.RSSI},
         
         TYPE_PM25CH1_BATT : {"dev_type": "CH1 PM25","name":"CH1 PM2.5 Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_PM25CH2_BATT : {"dev_type": "CH2 PM25","name":"CH2 PM2.5 Battery","data_type":WittiotDataTypes.BATTERY},
@@ -628,6 +686,17 @@ class MultiSensorInfo:
         TYPE_LDSCH2_BATT : {"dev_type": "CH2 Lds","name":"CH2 Lds Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_LDSCH3_BATT : {"dev_type": "CH3 Lds","name":"CH3 Lds Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_LDSCH4_BATT : {"dev_type": "CH4 Lds","name":"CH4 Lds Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_WH85_BATT : {"dev_type": "Haptic 3-in-1","name":"Haptic 3-in-1 Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_WH90_BATT : {"dev_type": "Haptic Array","name":"Haptic Array Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_WH69_BATT : {"dev_type": "Sensor Array","name":"Sensor Array Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_WH68_BATT : {"dev_type": "Wind Sensor","name":"Wind Sensor Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_WH40_BATT : {"dev_type": "Rainfall Sensor","name":"Rainfall Sensor Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_WN20_BATT : {"dev_type": "Rain Gauge Mini","name":"Rain Gauge Mini Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_WH25_BATT : {"dev_type": "T&RH&P Sensor","name":"T&RH&P Sensor Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_WH26_BATT : {"dev_type": "Outdoor T&RH Sensor","name":"Outdoor T&RH Sensor Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_WH80_BATT : {"dev_type": "Sonic Array","name":"Sonic Array Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_WH57_BATT : {"dev_type": "Lightning Sensor","name":"Lightning Sensor Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_WH45_BATT : {"dev_type": "AQI Combo Sensor","name":"AQI Combo Sensor Battery","data_type":WittiotDataTypes.BATTERY},
     }
 
 class API:
@@ -1014,6 +1083,14 @@ class API:
             return val
         if ld_tempch in ["None", "--", "", "--.-", "---.-" "--.--"] and ld_humich in ["None", "--", "", "--.-", "---.-" "--.--"] :
             return "--"
+        if val=="0":
+            val="Normal"
+        else:
+            val="Low"
+        return val
+    def val_tobattery_binary_mk2(self,val):
+        if val=="" or val =="--" or val =="--.-":
+            return val
         if val=="0":
             val="Normal"
         else:
@@ -1724,6 +1801,17 @@ class API:
             "lds_ch2_rssi":ld_sen_rssi[67],
             "lds_ch3_rssi":ld_sen_rssi[68],
             "lds_ch4_rssi":ld_sen_rssi[69],
+            "wh85_rssi":ld_sen_rssi[49],
+            "wh90_rssi":ld_sen_rssi[48],
+            "wh69_rssi":ld_sen_rssi[0],
+            "wh68_rssi":ld_sen_rssi[1],
+            "wh40_rssi":ld_sen_rssi[3],
+            "wn20_rssi":ld_sen_rssi[70],
+            "wh25_rssi":ld_sen_rssi[4],
+            "wh26_rssi":ld_sen_rssi[5],
+            "wh80_rssi":ld_sen_rssi[2],
+            "wh57_rssi":ld_sen_rssi[26],
+            "wh45_rssi":ld_sen_rssi[39],
             
             "pm25_ch1_signal":ld_sen_signal[22],
             "pm25_ch2_signal":ld_sen_signal[23],
@@ -1777,6 +1865,17 @@ class API:
             "lds_ch2_signal":ld_sen_signal[67],
             "lds_ch3_signal":ld_sen_signal[68],
             "lds_ch4_signal":ld_sen_signal[69],
+            "wh85_signal":ld_sen_signal[49],
+            "wh90_signal":ld_sen_signal[48],
+            "wh69_signal":ld_sen_signal[0],
+            "wh68_signal":ld_sen_signal[1],
+            "wh40_signal":ld_sen_signal[3],
+            "wn20_signal":ld_sen_signal[70],
+            "wh25_signal":ld_sen_signal[4],
+            "wh26_signal":ld_sen_signal[5],
+            "wh80_signal":ld_sen_signal[2],
+            "wh57_signal":ld_sen_signal[26],
+            "wh45_signal":ld_sen_signal[39],
             # "allbatt":ld_sen_batt,
             "pm25_ch1_batt":self.val_tobattery(ld_sen_batt[22],"","1"),
             "pm25_ch2_batt":self.val_tobattery(ld_sen_batt[23],"","1"),
@@ -1830,6 +1929,18 @@ class API:
             "lds_ch2_batt":self.val_tobattery(ld_sen_batt[67],"","1"),
             "lds_ch3_batt":self.val_tobattery(ld_sen_batt[68],"","1"),
             "lds_ch4_batt":self.val_tobattery(ld_sen_batt[69],"","1"),
+            "wh85_batt":self.val_tobattery(ld_sen_batt[49],"","1"),
+            "wh90_batt":self.val_tobattery(ld_sen_batt[48],"","1"),
+            "wh69_batt":self.val_tobattery_binary_mk2(ld_sen_batt[0]),
+            "wh68_batt":self.val_tobattery(ld_sen_batt[1],"","1"),
+            "wh40_batt":self.val_tobattery(ld_sen_batt[3],"","1"),
+            "wn20_batt":self.val_tobattery(ld_sen_batt[70],"","1"),
+            "wh25_batt":self.val_tobattery_binary_mk2(ld_sen_batt[4]),
+            "wh26_batt":self.val_tobattery_binary_mk2(ld_sen_batt[5]),
+            "wh80_batt":self.val_tobattery(ld_sen_batt[2],"","1"),
+            "wh57_batt":self.val_tobattery(ld_sen_batt[26],"","1"),
+            "wh45_batt":self.val_tobattery(ld_sen_batt[39],"","1"),
+            
             "iot_list": res_iotlist
         }
         # hex_str = format(255, 'X')
