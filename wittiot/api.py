@@ -703,7 +703,6 @@ class API:
     """Define the API object."""
     def __init__(
         self,
-
         ip: str,
         *,
         api_version: int = DEFAULT_API_VERSION,
@@ -715,6 +714,10 @@ class API:
         self._api_version: int = api_version
         self._logger = logger
         self._session: Optional[ClientSession] = session
+        
+        self._iot_id = 0
+        self._iot_model = 0
+        self._iot_switch = 0
 
     def is_valid_float(self,val):
         try:
@@ -843,10 +846,43 @@ class API:
                     commands[i].update(response)
             except Exception as err:
                 # 错误处理
-                print(f"更新设备状态失败: {err}")
+                self._logger.debug(f"更新设备状态失败: {err}")
         return commands
         
-        
+    async def switch_iotdevice(self):
+        # {"command":[{"on_type":0,"off_type":0,"always_on":1,"on_time":0,"off_time":0,"val_type":1,"val":0,"cmd":"quick_run","id":1753,"model":1}]}
+        # {"command":[{"cmd":"quick_stop","id":1753,"model":1}]}
+        if self._iot_switch == 0:
+            cmd = {
+                    "cmd": "quick_stop",
+                    "id": self._iot_id,
+                    "model": self._iot_model
+            }
+        else:
+            cmd = {
+                "on_type":0,
+                "off_type":0,
+                "always_on":1,
+                "on_time":0,
+                "off_time":0,
+                "val_type":1,
+                "val":0,
+                "cmd":"quick_run",
+                "id": self._iot_id,
+                "model": self._iot_model
+            }
+        payload = {"command": [cmd]}
+        response = None
+        try:
+            url = f"http://{self._ip}/{GW11268_API_READIOT}"
+            response = await self._post_data(
+                url,  # 替换为实际API端点
+                payload=payload
+            )
+        except Exception as err:
+            # 错误处理
+            self._logger.debug(f"更新设备状态失败: {err}")
+        return response
     async def _request_loc_batt1(self) -> List[Dict[str, Any]]:
 
         url = f"http://{self._ip}/{GW11268_API_SENID_1}"
