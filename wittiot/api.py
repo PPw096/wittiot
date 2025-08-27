@@ -699,6 +699,7 @@ class MultiSensorInfo:
         TYPE_WH45_BATT : {"dev_type": "AQI Combo Sensor","name":"AQI Combo Sensor Battery","data_type":WittiotDataTypes.BATTERY},
     }
 
+
 class API:
     """Define the API object."""
     def __init__(
@@ -715,9 +716,8 @@ class API:
         self._logger = logger
         self._session: Optional[ClientSession] = session
         
-        self._iot_id = 0
-        self._iot_model = 0
-        self._iot_switch = 0
+        self.unit_temp = 0
+
 
     def is_valid_float(self,val):
         try:
@@ -849,28 +849,39 @@ class API:
                 self._logger.debug(f"更新设备状态失败: {err}")
         return commands
         
-    async def switch_iotdevice(self):
+    async def switch_iotdevice(self,_iot_id,_iot_model,_iot_switch):
         # {"command":[{"on_type":0,"off_type":0,"always_on":1,"on_time":0,"off_time":0,"val_type":1,"val":0,"cmd":"quick_run","id":1753,"model":1}]}
         # {"command":[{"cmd":"quick_stop","id":1753,"model":1}]}
-        if self._iot_switch == 0:
+        if _iot_switch == 0:
             cmd = {
                     "cmd": "quick_stop",
-                    "id": self._iot_id,
-                    "model": self._iot_model
+                    "id": _iot_id,
+                    "model": _iot_model
             }
         else:
-            cmd = {
-                "on_type":0,
-                "off_type":0,
-                "always_on":1,
-                "on_time":0,
-                "off_time":0,
-                "val_type":1,
-                "val":0,
-                "cmd":"quick_run",
-                "id": self._iot_id,
-                "model": self._iot_model
-            }
+            if _iot_model == 3:
+                cmd = {
+                    "position":100,
+                    "always_on":1,
+                    "val_type":1,
+                    "val":0,
+                    "cmd":"quick_run",
+                    "id": _iot_id,
+                    "model": _iot_model
+                }
+            else:
+                cmd = {
+                    "on_type":0,
+                    "off_type":0,
+                    "always_on":1,
+                    "on_time":0,
+                    "off_time":0,
+                    "val_type":1,
+                    "val":0,
+                    "cmd":"quick_run",
+                    "id": _iot_id,
+                    "model": _iot_model
+                }
         payload = {"command": [cmd]}
         response = None
         try:
@@ -1196,7 +1207,7 @@ class API:
             if isWFC:
                 if formatDataMap[iotType][4] in res:
                     data_water = res[formatDataMap[iotType][4]]
-                    device_info["data_water_t"]=data_water
+                    device_info["data_water_t"]=self.locval_totemp(data_water,self.unit_temp)
                 if iotType == "WFC02":
                     wfc02_position=res["wfc02_position"]
                     device_info["wfc02_position"]=wfc02_position
@@ -1363,6 +1374,15 @@ class API:
         res_batt2 = await self._request_loc_batt2()
         res_sys = await self._request_loc_sys()
         res_mac = await self._request_loc_mac()
+        
+        unit_temp =res_unit["temperature"]
+        unit_press=res_unit["pressure"]
+        unit_wind =res_unit["wind"]
+        unit_rain =res_unit["rain"]
+        unit_light=res_unit["light"]
+        
+        self.unit_temp = unit_temp 
+
 
         res_iotlist = await self._request_loc_iotlist()
         
@@ -1374,11 +1394,7 @@ class API:
         # print(res_batt1 )
         # print(res_batt2 )
 
-        unit_temp=res_unit["temperature"]
-        unit_press=res_unit["pressure"]
-        unit_wind=res_unit["wind"]
-        unit_rain=res_unit["rain"]
-        unit_light=res_unit["light"]
+        
 
         # res=(jsondata)
         # print("_request_loc_unit  : %s", res_data["common_list"])
