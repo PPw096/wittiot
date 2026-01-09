@@ -785,7 +785,19 @@ class API:
         
         self.unit_temp = 0
 
-
+    def replace_title_bsr(self,res_data,val1,val2,ch,index):
+        key_name = f"{val1}{ch+1}"
+        key_name_batt = f"{key_name}_batt"
+        key_name_signal = f"{key_name}_signal"
+        key_name_rssi = f"{key_name}_rssi"
+        # MultiSensorInfo.SENSOR_INFO[key_name]["name"] = res_data[val2][index]["name"]
+        MultiSensorInfo.SENSOR_INFO[key_name_batt]["name"] = res_data[val2][index]["name"]+" Battery"
+        MultiSensorInfo.SENSOR_INFO[key_name_signal]["name"] = res_data[val2][index]["name"]+" Signal"
+        MultiSensorInfo.SENSOR_INFO[key_name_rssi]["name"] = res_data[val2][index]["name"]+" RSSI"
+    def replace_title(self,res_data,val1,val2,ch,index,add_name=""):
+        key_name = f"{val1}{ch+1}"
+        MultiSensorInfo.SENSOR_INFO[key_name]["name"] = res_data[val2][index]["name"] + add_name
+        
     def is_valid_float(self,val):
         try:
             float(val)  # 尝试转换 
@@ -1601,16 +1613,7 @@ class API:
                     ld_pm25ch4_AQI=res_data["ch_pm25"][index]["PM25_RealAQI"]
                     ld_pm25ch4_24AQI=res_data["ch_pm25"][index]["PM25_24HAQI"]
 
-        if "ch_leak" in res_data:
-            for index in range(len(res_data["ch_leak"])):
-                if res_data["ch_leak"][index]["channel"]=='1':
-                    ld_leakch1=res_data["ch_leak"][index]["status"]
-                elif res_data["ch_leak"][index]["channel"]=='2':
-                    ld_leakch2=res_data["ch_leak"][index]["status"]
-                elif res_data["ch_leak"][index]["channel"]=='3':
-                    ld_leakch3=res_data["ch_leak"][index]["status"]
-                elif res_data["ch_leak"][index]["channel"]=='4':
-                    ld_leakch4=res_data["ch_leak"][index]["status"]
+        
 
         ld_soil=[]
         ld_tempch=[]
@@ -1621,6 +1624,7 @@ class API:
         ld_lds_depthch=[]
         ld_lds_heatch=[]
         ld_lds_height=[]
+        ld_leakch=[]
         for i in range(16):
             ld_soil.append("--")
             ld_tempch.append("--")
@@ -1631,29 +1635,51 @@ class API:
             ld_lds_depthch.append("--")
             ld_lds_heatch.append("--")
             ld_lds_height.append("--")
+            ld_leakch.append("--")
+            
+        if "ch_leak" in res_data:
+            for index in range(len(res_data["ch_leak"])):
+                ch=int(res_data["ch_leak"][index]["channel"])-1
+                ld_leakch[ch]=res_data["ch_leak"][index]["status"]
+                if res_data["ch_leak"][index]["name"]!="":
+                    self.replace_title(res_data,"leak_ch","ch_leak",ch,index)
+                    self.replace_title_bsr(res_data,"leak_ch","ch_leak",ch,index)
 
         if "ch_aisle" in res_data:
             for index in range(len(res_data["ch_aisle"])):
                 ch=int(res_data["ch_aisle"][index]["channel"])-1
                 ld_tempch[ch]=self.locval_totemp(res_data["ch_aisle"][index]["temp"],unit_temp)
                 ld_humich[ch]=self.locval_tohumi(res_data["ch_aisle"][index]["humidity"])
+                if res_data["ch_aisle"][index]["name"]!="":
+                    self.replace_title(res_data,"temp_ch","ch_aisle",ch,index," Temperature")
+                    self.replace_title(res_data,"humidity_ch","ch_aisle",ch,index," Humidity")
+                    self.replace_title_bsr(res_data,"temph_ch","ch_aisle",ch,index)
 
         if "ch_soil" in res_data:
             for index in range(len(res_data["ch_soil"])):
                 ch=int(res_data["ch_soil"][index]["channel"])-1
                 ld_soil[ch]=self.locval_tohumi(res_data["ch_soil"][index]["humidity"])
+                if res_data["ch_soil"][index]["name"]!="":
+                    self.replace_title(res_data,"Soilmoisture_ch","ch_soil",ch,index)
+                    self.replace_title_bsr(res_data,"Soilmoisture_ch","ch_soil",ch,index)
 
 
         if "ch_temp" in res_data:
             for index in range(len(res_data["ch_temp"])):
                 ch=int(res_data["ch_temp"][index]["channel"])-1
                 ld_onlytempch[ch]=self.locval_totemp(res_data["ch_temp"][index]["temp"],unit_temp)
-
+                if res_data["ch_temp"][index]["name"]!="":
+                    self.replace_title(res_data,"tf_ch","ch_temp",ch,index)
+                    self.replace_title_bsr(res_data,"tf_ch","ch_temp",ch,index)
+                
 
         if "ch_leaf" in res_data:
             for index in range(len(res_data["ch_leaf"])):
                 ch=int(res_data["ch_leaf"][index]["channel"])-1
                 ld_leafch[ch]=self.locval_tohumi(res_data["ch_leaf"][index]["humidity"])
+                if res_data["ch_leaf"][index]["name"]!="":
+                    self.replace_title(res_data,"leaf_ch","ch_leaf",ch,index)
+                    self.replace_title_bsr(res_data,"leaf_ch","ch_leaf",ch,index)
                 
         if "ch_lds" in res_data:
             for index in range(len(res_data["ch_lds"])):
@@ -1662,6 +1688,12 @@ class API:
                 ld_lds_depthch[ch]=self.locval_tolds(res_data["ch_lds"][index]["depth"],unit_rain)
                 ld_lds_heatch[ch]=res_data["ch_lds"][index].get("total_heat", "--")
                 ld_lds_height[ch]=self.locval_tolds(res_data["ch_lds"][index].get("total_height", "--"),unit_rain)
+                if res_data["ch_lds"][index]["name"]!="":
+                    self.replace_title(res_data,"lds_air_ch","ch_lds",ch,index," Air")
+                    self.replace_title(res_data,"lds_depth_ch","ch_lds",ch,index," Depth")
+                    self.replace_title(res_data,"lds_height_ch","ch_lds",ch,index," Height")
+                    self.replace_title(res_data,"lds_heat_ch","ch_lds",ch,index," Heater-on Counter")
+                    self.replace_title_bsr(res_data,"lds_ch","ch_lds",ch,index)
 
         ld_sen_batt=[]
         ld_sen_rssi  =[]
@@ -1702,7 +1734,8 @@ class API:
         mac=res_mac["mac"]
 
 
-        
+        # for sensor_key, new_name in MultiSensorInfo.SENSOR_INFO.items():
+        #     print(new_name["name"])
         # locval_totemp
         # locval_tohumi
         # locval_topress
@@ -1796,10 +1829,10 @@ class API:
             "lightning":self.locval_tolinghtdis(ld_lightning,unit_wind),
             "lightning_time":ld_lightning_time,
             "lightning_num":ld_lightning_power,
-            "leak_ch1":ld_leakch1,
-            "leak_ch2":ld_leakch2,
-            "leak_ch3":ld_leakch3,
-            "leak_ch4":ld_leakch4,
+            "leak_ch1":ld_leakch[0],
+            "leak_ch2":ld_leakch[1],
+            "leak_ch3":ld_leakch[2],
+            "leak_ch4":ld_leakch[3],
             "lds_air_ch1":ld_lds_airch[0],
             "lds_air_ch2":ld_lds_airch[1],
             "lds_air_ch3":ld_lds_airch[2],
