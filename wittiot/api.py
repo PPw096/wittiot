@@ -315,6 +315,57 @@ TYPE_WH80_SIGNAL = "wh80_signal"
 TYPE_WH57_SIGNAL = "wh57_signal"
 TYPE_WH45_SIGNAL = "wh45_signal"
 
+TYPE_ECCH1 = "ec_ch1"
+TYPE_ECCH2 = "ec_ch2"
+TYPE_ECCH3 = "ec_ch3"
+TYPE_ECCH4 = "ec_ch4"
+TYPE_ECCH5 = "ec_ch5"
+TYPE_ECCH6 = "ec_ch6"
+TYPE_ECCH7 = "ec_ch7"
+TYPE_ECCH8 = "ec_ch8"
+TYPE_ECCH9 = "ec_ch9"
+TYPE_ECCH10 = "ec_ch10"
+TYPE_ECCH11 = "ec_ch11"
+TYPE_ECCH12 = "ec_ch12"
+TYPE_ECCH13 = "ec_ch13"
+TYPE_ECCH14 = "ec_ch14"
+TYPE_ECCH15 = "ec_ch15"
+TYPE_ECCH16 = "ec_ch16"
+
+TYPE_ECCH1_TEMP = "ec_temp_ch1"
+TYPE_ECCH2_TEMP = "ec_temp_ch2"
+TYPE_ECCH3_TEMP = "ec_temp_ch3"
+TYPE_ECCH4_TEMP = "ec_temp_ch4"
+TYPE_ECCH5_TEMP = "ec_temp_ch5"
+TYPE_ECCH6_TEMP = "ec_temp_ch6"
+TYPE_ECCH7_TEMP = "ec_temp_ch7"
+TYPE_ECCH8_TEMP = "ec_temp_ch8"
+TYPE_ECCH9_TEMP = "ec_temp_ch9"
+TYPE_ECCH10_TEMP = "ec_temp_ch10"
+TYPE_ECCH11_TEMP = "ec_temp_ch11"
+TYPE_ECCH12_TEMP = "ec_temp_ch12"
+TYPE_ECCH13_TEMP = "ec_temp_ch13"
+TYPE_ECCH14_TEMP = "ec_temp_ch14"
+TYPE_ECCH15_TEMP = "ec_temp_ch15"
+TYPE_ECCH16_TEMP = "ec_temp_ch16"
+
+TYPE_ECCH1_HUMI = "ec_humidity_ch1"
+TYPE_ECCH2_HUMI = "ec_humidity_ch2"
+TYPE_ECCH3_HUMI = "ec_humidity_ch3"
+TYPE_ECCH4_HUMI = "ec_humidity_ch4"
+TYPE_ECCH5_HUMI = "ec_humidity_ch5"
+TYPE_ECCH6_HUMI = "ec_humidity_ch6"
+TYPE_ECCH7_HUMI = "ec_humidity_ch7"
+TYPE_ECCH8_HUMI = "ec_humidity_ch8"
+TYPE_ECCH9_HUMI = "ec_humidity_ch9"
+TYPE_ECCH10_HUMI = "ec_humidity_ch10"
+TYPE_ECCH11_HUMI = "ec_humidity_ch11"
+TYPE_ECCH12_HUMI = "ec_humidity_ch12"
+TYPE_ECCH13_HUMI = "ec_humidity_ch13"
+TYPE_ECCH14_HUMI = "ec_humidity_ch14"
+TYPE_ECCH15_HUMI = "ec_humidity_ch15"
+TYPE_ECCH16_HUMI = "ec_humidity_ch16"
+
 TYPE_PM25CH1_RSSI = "pm25_ch1_rssi"
 TYPE_PM25CH2_RSSI = "pm25_ch2_rssi"
 TYPE_PM25CH3_RSSI = "pm25_ch3_rssi"
@@ -466,6 +517,22 @@ class SubSensorname:
         "CH2 Lds",
         "CH3 Lds",
         "CH4 Lds",
+        "CH1 EC",
+        "CH2 EC",
+        "CH3 EC",
+        "CH4 EC",
+        "CH5 EC",
+        "CH6 EC",
+        "CH7 EC",
+        "CH8 EC",
+        "CH9 EC",
+        "CH10 EC",
+        "CH11 EC",
+        "CH12 EC",
+        "CH13 EC",
+        "CH14 EC",
+        "CH15 EC",
+        "CH16 EC",
     ]
 
 class WittiotDataTypes(enum.Enum):
@@ -481,6 +548,7 @@ class WittiotDataTypes(enum.Enum):
     BATTERY_BINARY=9
     SIGNAL = 10
     RSSI = 11
+    EC = 12
 
 
 
@@ -764,6 +832,54 @@ class MultiSensorInfo:
         TYPE_WH80_BATT : {"dev_type": "Sonic Array","name":"Sonic Array Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_WH57_BATT : {"dev_type": "Lightning Sensor","name":"Lightning Sensor Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_WH45_BATT : {"dev_type": "AQI Combo Sensor","name":"AQI Combo Sensor Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_ECCH1 : {"dev_type": "CH1 EC","name":"EC CH1","data_type":WittiotDataTypes.EC},
+        TYPE_ECCH2 : {"dev_type": "CH2 EC","name":"EC CH2","data_type":WittiotDataTypes.EC},
+        TYPE_ECCH3 : {"dev_type": "CH3 EC","name":"EC CH3","data_type":WittiotDataTypes.EC},
+        TYPE_ECCH4 : {"dev_type": "CH4 EC","name":"EC CH4","data_type":WittiotDataTypes.EC},
+        TYPE_ECCH5 : {"dev_type": "CH5 EC","name":"EC CH5","data_type":WittiotDataTypes.EC},
+        TYPE_ECCH6 : {"dev_type": "CH6 EC","name":"EC CH6","data_type":WittiotDataTypes.EC},
+        TYPE_ECCH7 : {"dev_type": "CH7 EC","name":"EC CH7","data_type":WittiotDataTypes.EC},
+        TYPE_ECCH8 : {"dev_type": "CH8 EC","name":"EC CH8","data_type":WittiotDataTypes.EC},
+        TYPE_ECCH9 : {"dev_type": "CH9 EC","name":"EC CH9","data_type":WittiotDataTypes.EC},
+        TYPE_ECCH10 : {"dev_type": "CH10 EC","name":"EC CH10","data_type":WittiotDataTypes.EC},
+        TYPE_ECCH11 : {"dev_type": "CH11 EC","name":"EC CH11","data_type":WittiotDataTypes.EC},
+        TYPE_ECCH12 : {"dev_type": "CH12 EC","name":"EC CH12","data_type":WittiotDataTypes.EC},
+        TYPE_ECCH13 : {"dev_type": "CH13 EC","name":"EC CH13","data_type":WittiotDataTypes.EC},
+        TYPE_ECCH14 : {"dev_type": "CH14 EC","name":"EC CH14","data_type":WittiotDataTypes.EC},
+        TYPE_ECCH15 : {"dev_type": "CH15 EC","name":"EC CH15","data_type":WittiotDataTypes.EC},
+        TYPE_ECCH16 : {"dev_type": "CH16 EC","name":"EC CH16","data_type":WittiotDataTypes.EC},
+        TYPE_ECCH1_TEMP : {"dev_type": "CH1 EC","name":"EC Temp CH1","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_ECCH2_TEMP : {"dev_type": "CH2 EC","name":"EC Temp CH2","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_ECCH3_TEMP : {"dev_type": "CH3 EC","name":"EC Temp CH3","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_ECCH4_TEMP : {"dev_type": "CH4 EC","name":"EC Temp CH4","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_ECCH5_TEMP : {"dev_type": "CH5 EC","name":"EC Temp CH5","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_ECCH6_TEMP : {"dev_type": "CH6 EC","name":"EC Temp CH6","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_ECCH7_TEMP : {"dev_type": "CH7 EC","name":"EC Temp CH7","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_ECCH8_TEMP : {"dev_type": "CH8 EC","name":"EC Temp CH8","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_ECCH9_TEMP : {"dev_type": "CH9 EC","name":"EC Temp CH9","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_ECCH10_TEMP : {"dev_type": "CH10 EC","name":"EC Temp CH10","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_ECCH11_TEMP : {"dev_type": "CH11 EC","name":"EC Temp CH11","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_ECCH12_TEMP : {"dev_type": "CH12 EC","name":"EC Temp CH12","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_ECCH13_TEMP : {"dev_type": "CH13 EC","name":"EC Temp CH13","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_ECCH14_TEMP : {"dev_type": "CH14 EC","name":"EC Temp CH14","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_ECCH15_TEMP : {"dev_type": "CH15 EC","name":"EC Temp CH15","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_ECCH16_TEMP : {"dev_type": "CH16 EC","name":"EC Temp CH16","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_ECCH1_HUMI : {"dev_type": "CH1 EC","name":"EC Humidity CH1","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_ECCH2_HUMI : {"dev_type": "CH2 EC","name":"EC Humidity CH2","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_ECCH3_HUMI : {"dev_type": "CH3 EC","name":"EC Humidity CH3","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_ECCH4_HUMI : {"dev_type": "CH4 EC","name":"EC Humidity CH4","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_ECCH5_HUMI : {"dev_type": "CH5 EC","name":"EC Humidity CH5","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_ECCH6_HUMI : {"dev_type": "CH6 EC","name":"EC Humidity CH6","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_ECCH7_HUMI : {"dev_type": "CH7 EC","name":"EC Humidity CH7","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_ECCH8_HUMI : {"dev_type": "CH8 EC","name":"EC Humidity CH8","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_ECCH9_HUMI : {"dev_type": "CH9 EC","name":"EC Humidity CH9","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_ECCH10_HUMI : {"dev_type": "CH10 EC","name":"EC Humidity CH10","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_ECCH11_HUMI : {"dev_type": "CH11 EC","name":"EC Humidity CH11","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_ECCH12_HUMI : {"dev_type": "CH12 EC","name":"EC Humidity CH12","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_ECCH13_HUMI : {"dev_type": "CH13 EC","name":"EC Humidity CH13","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_ECCH14_HUMI : {"dev_type": "CH14 EC","name":"EC Humidity CH14","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_ECCH15_HUMI : {"dev_type": "CH15 EC","name":"EC Humidity CH15","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_ECCH16_HUMI : {"dev_type": "CH16 EC","name":"EC Humidity CH16","data_type":WittiotDataTypes.HUMIDITY},
     }
 
 
@@ -1325,6 +1441,8 @@ class API:
         # time.sleep(15)
         ld_feellike= ''
         ld_dewpoint= ''
+        ld_bgt= ''
+        ld_wbgt= ''
         ld_isid= ''
         ld_osid1= ''
         ld_osid2= ''
@@ -1486,6 +1604,10 @@ class API:
                     ld_outhumi=res_data["common_list"][index]["val"]
                 elif res_data["common_list"][index]["id"]=='0x03':
                     ld_dewpoint=res_data["common_list"][index]["val"]
+                elif res_data["common_list"][index]["id"]=='0xA1':
+                    ld_bgt=res_data["common_list"][index]["val"]
+                elif res_data["common_list"][index]["id"]=='0xA2':
+                    ld_wbgt=res_data["common_list"][index]["val"]
                 elif res_data["common_list"][index]["id"]=='0x0A':
                     ld_wdir=res_data["common_list"][index]["val"]
                 elif res_data["common_list"][index]["id"]=='0x0B':
@@ -1625,6 +1747,9 @@ class API:
         ld_lds_heatch=[]
         ld_lds_height=[]
         ld_leakch=[]
+        ld_ecch=[]
+        ld_ec_tempch=[]
+        ld_ec_humich=[]
         for i in range(16):
             ld_soil.append("--")
             ld_tempch.append("--")
@@ -1636,6 +1761,9 @@ class API:
             ld_lds_heatch.append("--")
             ld_lds_height.append("--")
             ld_leakch.append("--")
+            ld_ecch.append("--")
+            ld_ec_tempch.append("--")
+            ld_ec_humich.append("--")
             
         if "ch_leak" in res_data:
             for index in range(len(res_data["ch_leak"])):
@@ -1694,6 +1822,28 @@ class API:
                     self.replace_title(res_data,"lds_height_ch","ch_lds",ch,index," Height")
                     self.replace_title(res_data,"lds_heat_ch","ch_lds",ch,index," Heater-on Counter")
                     self.replace_title_bsr(res_data,"lds_ch","ch_lds",ch,index)
+
+        if "ch_ec" in res_data:
+            for index in range(len(res_data["ch_ec"])):
+                ch=int(res_data["ch_ec"][index]["channel"])-1
+                ec_val = res_data["ch_ec"][index]["ec"]
+                if "us/cm" in ec_val:
+                    ec_val = ec_val.replace("us/cm", "").strip()
+                ld_ecch[ch]=ec_val
+                ld_ec_tempch[ch]=self.locval_totemp(res_data["ch_ec"][index]["temp"],unit_temp)
+                ld_ec_humich[ch]=self.locval_tohumi(res_data["ch_ec"][index]["humidity"])
+                key_prefix = f"Soilmoisture_ch{ch+1}"
+                key_batt = f"{key_prefix}_batt"
+                key_signal = f"{key_prefix}_signal"
+                key_rssi = f"{key_prefix}_rssi"
+                for key, suffix in ((key_batt, "Battery"), (key_signal, "Signal"), (key_rssi, "Rssi")):
+                    if key in MultiSensorInfo.SENSOR_INFO:
+                        MultiSensorInfo.SENSOR_INFO[key]["dev_type"] = f"CH{ch+1} EC"
+                        if res_data["ch_ec"][index]["name"]=="":
+                            MultiSensorInfo.SENSOR_INFO[key]["name"] = f"EC {suffix} CH{ch+1}"
+                if res_data["ch_ec"][index]["name"]!="":
+                    self.replace_title(res_data,"ec_ch","ch_ec",ch,index)
+                    self.replace_title_bsr(res_data,"Soilmoisture_ch","ch_ec",ch,index)
 
         ld_sen_batt=[]
         ld_sen_rssi  =[]
@@ -1755,6 +1905,8 @@ class API:
             "baromrelin":self.locval_topress(ld_rel,unit_press),
             "baromabsin":self.locval_topress(ld_abs,unit_press),
             "tempf":self.locval_totemp(ld_outtemp,unit_temp),
+            "bgt":self.locval_totemp(ld_bgt,unit_temp),
+            "wbgt":self.locval_totemp(ld_wbgt,unit_temp),
             "humidity":self.locval_tohumi(ld_outhumi),
             "winddir":ld_wdir,
             "winddir10":ld_wdir10,
@@ -1897,6 +2049,54 @@ class API:
             "leaf_ch6":ld_leafch[5],
             "leaf_ch7":ld_leafch[6],
             "leaf_ch8":ld_leafch[7],
+            "ec_ch1":ld_ecch[0],
+            "ec_ch2":ld_ecch[1],
+            "ec_ch3":ld_ecch[2],
+            "ec_ch4":ld_ecch[3],
+            "ec_ch5":ld_ecch[4],
+            "ec_ch6":ld_ecch[5],
+            "ec_ch7":ld_ecch[6],
+            "ec_ch8":ld_ecch[7],
+            "ec_ch9":ld_ecch[8],
+            "ec_ch10":ld_ecch[9],
+            "ec_ch11":ld_ecch[10],
+            "ec_ch12":ld_ecch[11],
+            "ec_ch13":ld_ecch[12],
+            "ec_ch14":ld_ecch[13],
+            "ec_ch15":ld_ecch[14],
+            "ec_ch16":ld_ecch[15],
+            "ec_temp_ch1":ld_ec_tempch[0],
+            "ec_temp_ch2":ld_ec_tempch[1],
+            "ec_temp_ch3":ld_ec_tempch[2],
+            "ec_temp_ch4":ld_ec_tempch[3],
+            "ec_temp_ch5":ld_ec_tempch[4],
+            "ec_temp_ch6":ld_ec_tempch[5],
+            "ec_temp_ch7":ld_ec_tempch[6],
+            "ec_temp_ch8":ld_ec_tempch[7],
+            "ec_temp_ch9":ld_ec_tempch[8],
+            "ec_temp_ch10":ld_ec_tempch[9],
+            "ec_temp_ch11":ld_ec_tempch[10],
+            "ec_temp_ch12":ld_ec_tempch[11],
+            "ec_temp_ch13":ld_ec_tempch[12],
+            "ec_temp_ch14":ld_ec_tempch[13],
+            "ec_temp_ch15":ld_ec_tempch[14],
+            "ec_temp_ch16":ld_ec_tempch[15],
+            "ec_humidity_ch1":ld_ec_humich[0],
+            "ec_humidity_ch2":ld_ec_humich[1],
+            "ec_humidity_ch3":ld_ec_humich[2],
+            "ec_humidity_ch4":ld_ec_humich[3],
+            "ec_humidity_ch5":ld_ec_humich[4],
+            "ec_humidity_ch6":ld_ec_humich[5],
+            "ec_humidity_ch7":ld_ec_humich[6],
+            "ec_humidity_ch8":ld_ec_humich[7],
+            "ec_humidity_ch9":ld_ec_humich[8],
+            "ec_humidity_ch10":ld_ec_humich[9],
+            "ec_humidity_ch11":ld_ec_humich[10],
+            "ec_humidity_ch12":ld_ec_humich[11],
+            "ec_humidity_ch13":ld_ec_humich[12],
+            "ec_humidity_ch14":ld_ec_humich[13],
+            "ec_humidity_ch15":ld_ec_humich[14],
+            "ec_humidity_ch16":ld_ec_humich[15],
             "ver":ver,
             "devname":devname,
             "mac":mac,
