@@ -549,6 +549,7 @@ class WittiotDataTypes(enum.Enum):
     SIGNAL = 10
     RSSI = 11
     EC = 12
+    MOISTURE = 13
 
 
 
@@ -592,22 +593,22 @@ class MultiSensorInfo:
         TYPE_HUMICH6 : {"dev_type": "CH6 T&H","name":"T&H Humidity CH6","data_type":WittiotDataTypes.HUMIDITY},
         TYPE_HUMICH7 : {"dev_type": "CH7 T&H","name":"T&H Humidity CH7","data_type":WittiotDataTypes.HUMIDITY},
         TYPE_HUMICH8 : {"dev_type": "CH8 T&H","name":"T&H Humidity CH8","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_SOILCH1 : {"dev_type": "CH1 Soil","name":"Soil CH1","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_SOILCH2 : {"dev_type": "CH2 Soil","name":"Soil CH2","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_SOILCH3 : {"dev_type": "CH3 Soil","name":"Soil CH3","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_SOILCH4 : {"dev_type": "CH4 Soil","name":"Soil CH4","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_SOILCH5 : {"dev_type": "CH5 Soil","name":"Soil CH5","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_SOILCH6 : {"dev_type": "CH6 Soil","name":"Soil CH6","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_SOILCH7 : {"dev_type": "CH7 Soil","name":"Soil CH7","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_SOILCH8 : {"dev_type": "CH8 Soil","name":"Soil CH8","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_SOILCH9 : {"dev_type": "CH9 Soil","name":"Soil CH9","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_SOILCH10 : {"dev_type": "CH10 Soil","name":"Soil CH10","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_SOILCH11 : {"dev_type": "CH11 Soil","name":"Soil CH11","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_SOILCH12 : {"dev_type": "CH12 Soil","name":"Soil CH12","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_SOILCH13 : {"dev_type": "CH13 Soil","name":"Soil CH13","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_SOILCH14 : {"dev_type": "CH14 Soil","name":"Soil CH14","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_SOILCH15 : {"dev_type": "CH15 Soil","name":"Soil CH15","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_SOILCH16 : {"dev_type": "CH16 Soil","name":"Soil CH16","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_SOILCH1 : {"dev_type": "CH1 Soil","name":"Soil CH1","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_SOILCH2 : {"dev_type": "CH2 Soil","name":"Soil CH2","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_SOILCH3 : {"dev_type": "CH3 Soil","name":"Soil CH3","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_SOILCH4 : {"dev_type": "CH4 Soil","name":"Soil CH4","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_SOILCH5 : {"dev_type": "CH5 Soil","name":"Soil CH5","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_SOILCH6 : {"dev_type": "CH6 Soil","name":"Soil CH6","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_SOILCH7 : {"dev_type": "CH7 Soil","name":"Soil CH7","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_SOILCH8 : {"dev_type": "CH8 Soil","name":"Soil CH8","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_SOILCH9 : {"dev_type": "CH9 Soil","name":"Soil CH9","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_SOILCH10 : {"dev_type": "CH10 Soil","name":"Soil CH10","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_SOILCH11 : {"dev_type": "CH11 Soil","name":"Soil CH11","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_SOILCH12 : {"dev_type": "CH12 Soil","name":"Soil CH12","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_SOILCH13 : {"dev_type": "CH13 Soil","name":"Soil CH13","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_SOILCH14 : {"dev_type": "CH14 Soil","name":"Soil CH14","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_SOILCH15 : {"dev_type": "CH15 Soil","name":"Soil CH15","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_SOILCH16 : {"dev_type": "CH16 Soil","name":"Soil CH16","data_type":WittiotDataTypes.MOISTURE},
         TYPE_ONLYTEMPCH1 : {"dev_type": "CH1 Temp","name":"Temp CH1","data_type":WittiotDataTypes.TEMPERATURE},
         TYPE_ONLYTEMPCH2 : {"dev_type": "CH2 Temp","name":"Temp CH2","data_type":WittiotDataTypes.TEMPERATURE},
         TYPE_ONLYTEMPCH3 : {"dev_type": "CH3 Temp","name":"Temp CH3","data_type":WittiotDataTypes.TEMPERATURE},
@@ -823,12 +824,12 @@ class MultiSensorInfo:
         TYPE_LDSCH4_BATT : {"dev_type": "CH4 Lds","name":"LDS Battery CH4","data_type":WittiotDataTypes.BATTERY},
         TYPE_WH85_BATT : {"dev_type": "Haptic 3-in-1","name":"Haptic 3-in-1 Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_WH90_BATT : {"dev_type": "Haptic Array","name":"Haptic Array Battery","data_type":WittiotDataTypes.BATTERY},
-        TYPE_WH69_BATT : {"dev_type": "Sensor Array","name":"Sensor Array Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_WH69_BATT : {"dev_type": "Sensor Array","name":"Sensor Array Battery","data_type":WittiotDataTypes.BATTERY_BINARY},
         TYPE_WH68_BATT : {"dev_type": "Wind Sensor","name":"Wind Sensor Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_WH40_BATT : {"dev_type": "Rainfall Sensor","name":"Rainfall Sensor Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_WN20_BATT : {"dev_type": "Rain Gauge Mini","name":"Rain Gauge Mini Battery","data_type":WittiotDataTypes.BATTERY},
-        TYPE_WH25_BATT : {"dev_type": "T&RH&P Sensor","name":"T&RH&P Sensor Battery","data_type":WittiotDataTypes.BATTERY},
-        TYPE_WH26_BATT : {"dev_type": "Outdoor T&RH Sensor","name":"Outdoor T&RH Sensor Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_WH25_BATT : {"dev_type": "T&RH&P Sensor","name":"T&RH&P Sensor Battery","data_type":WittiotDataTypes.BATTERY_BINARY},
+        TYPE_WH26_BATT : {"dev_type": "Outdoor T&RH Sensor","name":"Outdoor T&RH Sensor Battery","data_type":WittiotDataTypes.BATTERY_BINARY},
         TYPE_WH80_BATT : {"dev_type": "Sonic Array","name":"Sonic Array Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_WH57_BATT : {"dev_type": "Lightning Sensor","name":"Lightning Sensor Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_WH45_BATT : {"dev_type": "AQI Combo Sensor","name":"AQI Combo Sensor Battery","data_type":WittiotDataTypes.BATTERY},
@@ -864,22 +865,22 @@ class MultiSensorInfo:
         TYPE_ECCH14_TEMP : {"dev_type": "CH14 EC","name":"Soil EC Temp CH14","data_type":WittiotDataTypes.TEMPERATURE},
         TYPE_ECCH15_TEMP : {"dev_type": "CH15 EC","name":"Soil EC Temp CH15","data_type":WittiotDataTypes.TEMPERATURE},
         TYPE_ECCH16_TEMP : {"dev_type": "CH16 EC","name":"Soil EC Temp CH16","data_type":WittiotDataTypes.TEMPERATURE},
-        TYPE_ECCH1_HUMI : {"dev_type": "CH1 EC","name":"Soil EC Humidity CH1","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_ECCH2_HUMI : {"dev_type": "CH2 EC","name":"Soil EC Humidity CH2","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_ECCH3_HUMI : {"dev_type": "CH3 EC","name":"Soil EC Humidity CH3","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_ECCH4_HUMI : {"dev_type": "CH4 EC","name":"Soil EC Humidity CH4","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_ECCH5_HUMI : {"dev_type": "CH5 EC","name":"Soil EC Humidity CH5","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_ECCH6_HUMI : {"dev_type": "CH6 EC","name":"Soil EC Humidity CH6","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_ECCH7_HUMI : {"dev_type": "CH7 EC","name":"Soil EC Humidity CH7","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_ECCH8_HUMI : {"dev_type": "CH8 EC","name":"Soil EC Humidity CH8","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_ECCH9_HUMI : {"dev_type": "CH9 EC","name":"Soil EC Humidity CH9","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_ECCH10_HUMI : {"dev_type": "CH10 EC","name":"Soil EC Humidity CH10","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_ECCH11_HUMI : {"dev_type": "CH11 EC","name":"Soil EC Humidity CH11","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_ECCH12_HUMI : {"dev_type": "CH12 EC","name":"Soil EC Humidity CH12","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_ECCH13_HUMI : {"dev_type": "CH13 EC","name":"Soil EC Humidity CH13","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_ECCH14_HUMI : {"dev_type": "CH14 EC","name":"Soil EC Humidity CH14","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_ECCH15_HUMI : {"dev_type": "CH15 EC","name":"Soil EC Humidity CH15","data_type":WittiotDataTypes.HUMIDITY},
-        TYPE_ECCH16_HUMI : {"dev_type": "CH16 EC","name":"Soil EC Humidity CH16","data_type":WittiotDataTypes.HUMIDITY},
+        TYPE_ECCH1_HUMI : {"dev_type": "CH1 EC","name":"Soil EC Humidity CH1","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_ECCH2_HUMI : {"dev_type": "CH2 EC","name":"Soil EC Humidity CH2","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_ECCH3_HUMI : {"dev_type": "CH3 EC","name":"Soil EC Humidity CH3","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_ECCH4_HUMI : {"dev_type": "CH4 EC","name":"Soil EC Humidity CH4","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_ECCH5_HUMI : {"dev_type": "CH5 EC","name":"Soil EC Humidity CH5","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_ECCH6_HUMI : {"dev_type": "CH6 EC","name":"Soil EC Humidity CH6","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_ECCH7_HUMI : {"dev_type": "CH7 EC","name":"Soil EC Humidity CH7","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_ECCH8_HUMI : {"dev_type": "CH8 EC","name":"Soil EC Humidity CH8","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_ECCH9_HUMI : {"dev_type": "CH9 EC","name":"Soil EC Humidity CH9","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_ECCH10_HUMI : {"dev_type": "CH10 EC","name":"Soil EC Humidity CH10","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_ECCH11_HUMI : {"dev_type": "CH11 EC","name":"Soil EC Humidity CH11","data_type":WittiotDataTypes.MOISTURE},   
+        TYPE_ECCH12_HUMI : {"dev_type": "CH12 EC","name":"Soil EC Humidity CH12","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_ECCH13_HUMI : {"dev_type": "CH13 EC","name":"Soil EC Humidity CH13","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_ECCH14_HUMI : {"dev_type": "CH14 EC","name":"Soil EC Humidity CH14","data_type":WittiotDataTypes.MOISTURE},   
+        TYPE_ECCH15_HUMI : {"dev_type": "CH15 EC","name":"Soil EC Humidity CH15","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_ECCH16_HUMI : {"dev_type": "CH16 EC","name":"Soil EC Humidity CH16","data_type":WittiotDataTypes.MOISTURE},
     }
 
 
@@ -1173,7 +1174,7 @@ class API:
                      return ""
                 val=int(val)
                 if val>0 and val<=5:
-                    val=f"{val*20}%"
+                    val=f"{val*20}"
                 elif val==6:
                     val="DC"
                 else:
@@ -1185,7 +1186,7 @@ class API:
                 return ""
             val=int(val)
             if val>0 and val<=5:
-                 val=f"{val*20}%"
+                 val=f"{val*20}"
             elif val==6:
                  val="DC"
             else:
