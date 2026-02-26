@@ -1827,8 +1827,8 @@ class API:
             for index in range(len(res_data["ch_ec"])):
                 ch=int(res_data["ch_ec"][index]["channel"])-1
                 ec_val = res_data["ch_ec"][index]["ec"]
-                if "us/cm" in ec_val:
-                    ec_val = ec_val.replace("us/cm", "").strip()
+                if isinstance(ec_val, str):
+                    ec_val = ec_val.replace("us/cm", "").replace("uS/cm", "").strip()
                 ld_ecch[ch]=ec_val
                 ld_ec_tempch[ch]=self.locval_totemp(res_data["ch_ec"][index]["temp"],unit_temp)
                 ld_ec_humich[ch]=self.locval_tohumi(res_data["ch_ec"][index]["humidity"])
