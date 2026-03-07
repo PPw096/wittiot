@@ -5,6 +5,7 @@ from datetime import date
 import enum
 from http.client import SWITCHING_PROTOCOLS
 import logging
+import re
 from typing import Any, Dict, List,Union, Optional, cast
 
 from aiohttp import ClientSession, ClientTimeout
@@ -16,7 +17,7 @@ import json
 # from errors import RequestError
 
 from .const import DEFAULT_API_VERSION, LOGGER
-from .errors import RequestError
+from .errors import FirmwareUpdateInstallError, FirmwareUpdateUnsupportedError, RequestError
 
 
 
@@ -30,6 +31,8 @@ GW11268_API_MAC = "get_network_info"
 GW11268_API_IOTINFO = "get_iot_device_list"
 GW11268_API_READIOT = "parse_quick_cmd_iot"
 
+GW11268_API_UPGRADE_PROCESS = "upgrade_process"
+GW11268_UPGRADE_STATES = {"check", "start", "running", "over"}
 DEFAULT_LIMIT = 288
 DEFAULT_TIMEOUT = 20
 
@@ -901,6 +904,7 @@ class API:
         self._session: Optional[ClientSession] = session
         
         self.unit_temp = 0
+        self._last_firmware_update_info: Optional[Dict[str, Any]] = None
 
     def replace_title_bsr(self,res_data,val1,val2,ch,index):
         key_name = f"{val1}{ch+1}"
@@ -1120,6 +1124,116 @@ class API:
         url = f"http://{self._ip}/{GW11268_API_IOTINFO}"
         val=await self._request_data(url)
         return val
+
+    def _normalize_version(self, value: Any) -> Optional[str]:
+        if value is None:
+            return None
+        raw = str(value).strip()
+        if not raw:
+            return None
+        match = re.search(r"([\\d.]+)$", raw)
+        if not match:
+            return None
+        return match.group(1)
+
+    def _deep_find_first(self, payload: Any, keys: tuple[str, ...]) -> Any:
+        if isinstance(payload, dict):
+            for key, value in payload.items():
+                if key.lower() in keys:
+                    return value
+                nested = self._deep_find_first(value, keys)
+                if nested is not None:
+                    return nested
+            return None
+        if isinstance(payload, list):
+            for item in payload:
+                nested = self._deep_find_first(item, keys)
+                if nested is not None:
+                    return nested
+        return None
+
+    def _extract_latest_version_from_msg(self, message: Any) -> Optional[str]:
+        if not isinstance(message, str):
+            return None
+        match = re.search(r"New Version:V([0-9.]+)", message, flags=re.IGNORECASE)
+        if not match:
+            return None
+        return match.group(1)
+
+    async def request_firmware_update_info(self) -> Dict[str, Any]:
+        info, device_info = await asyncio.gather(
+            self._request_loc_info(),
+            self._request_loc_sys(),
+        )
+        installed_version = self._normalize_version(info.get("version"))
+        release_summary = device_info.get("curr_msg")
+        latest_version = self._extract_latest_version_from_msg(release_summary)
+        has_new_version = str(device_info.get("newVersion", "0")) == "1"
+        firmware_info: Dict[str, Any] = {
+            "installed_version": installed_version,
+            "latest_version": latest_version,
+            "release_summary": release_summary,
+            "release_url": None,
+            "check_supported": True,
+            "install_supported": True,
+            "install_endpoint": f"/{GW11268_API_UPGRADE_PROCESS}",
+            "install_method": "POST",
+            "install_payload": {"upgrade": "start"},
+            "raw": {"get_version": info, "get_device_info": device_info},
+            "is_new": has_new_version,
+        }
+
+        self._last_firmware_update_info = firmware_info
+        return firmware_info
+
+    async def install_firmware_update(self) -> Dict[str, Any]:
+        firmware_info = self._last_firmware_update_info or await self.request_firmware_update_info()
+        install_endpoint = firmware_info.get("install_endpoint")
+        if not install_endpoint:
+            raise FirmwareUpdateUnsupportedError("Firmware install endpoint is not available on this device")
+
+        install_method = firmware_info["install_method"]
+        install_payload = firmware_info.get("install_payload")
+        if install_payload is not None and not isinstance(install_payload, dict):
+            install_payload = None
+
+        url = f"http://{self._ip}/{str(install_endpoint).lstrip('/')}"
+        try:
+            response = await self._post_data(url, payload=install_payload)
+        except RequestError as err:
+            raise FirmwareUpdateInstallError(f"Firmware install request failed: {err}") from err
+
+        if not response:
+            raise FirmwareUpdateInstallError("Firmware install request returned an empty response")
+
+        success_flag = self._deep_find_first(response, ("success", "ok", "result", "status", "code"))
+        if isinstance(success_flag, str) and success_flag.lower() in ("error", "fail", "failed", "false"):
+            raise FirmwareUpdateInstallError(f"Firmware install rejected: {response}")
+        if isinstance(success_flag, int) and success_flag < 0:
+            raise FirmwareUpdateInstallError(f"Firmware install rejected: {response}")
+
+        return {"endpoint": install_endpoint, "method": install_method, "response": response}
+
+    async def request_firmware_update_check(self) -> Dict[str, Any]:
+        url = f"http://{self._ip}/{GW11268_API_UPGRADE_PROCESS}"
+        payload = {"upgrade": "check"}
+        try:
+            response = await self._post_data(url, payload=payload)
+        except RequestError as err:
+            raise FirmwareUpdateUnsupportedError(f"Firmware update check is not supported: {err}") from err
+        return {"endpoint": f"/{GW11268_API_UPGRADE_PROCESS}", "method": "POST", "response": response}
+
+    async def request_firmware_update_progress(self, upgrade_state: str = "running") -> Dict[str, Any]:
+        if upgrade_state not in GW11268_UPGRADE_STATES:
+            raise RequestError(f"Invalid firmware update state: {upgrade_state}")
+        url = f"http://{self._ip}/{GW11268_API_UPGRADE_PROCESS}"
+        payload = {"upgrade": upgrade_state}
+        try:
+            response = await self._post_data(url, payload=payload)
+        except RequestError as err:
+            raise FirmwareUpdateUnsupportedError(f"Firmware update progress is not supported: {err}") from err
+        return {"endpoint": f"/{GW11268_API_UPGRADE_PROCESS}", "method": "POST", "response": response}
+
     # self.extract_device_data(val)
     
     
