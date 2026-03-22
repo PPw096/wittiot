@@ -1131,7 +1131,7 @@ class API:
         raw = str(value).strip()
         if not raw:
             return None
-        match = re.search(r"([\\d.]+)$", raw)
+        match = re.search(r"([\d.]+)$", raw)
         if not match:
             return None
         return match.group(1)
@@ -1167,8 +1167,10 @@ class API:
         )
         installed_version = self._normalize_version(info.get("version"))
         release_summary = device_info.get("curr_msg")
-        latest_version = self._extract_latest_version_from_msg(release_summary)
         has_new_version = str(device_info.get("newVersion", "0")) == "1"
+        latest_version = self._extract_latest_version_from_msg(release_summary)
+        if not latest_version and not has_new_version:
+            latest_version = installed_version
         firmware_info: Dict[str, Any] = {
             "installed_version": installed_version,
             "latest_version": latest_version,
