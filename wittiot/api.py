@@ -247,6 +247,7 @@ TYPE_WH69_BATT = "wh69_batt"
 TYPE_WH68_BATT = "wh68_batt"
 TYPE_WH40_BATT = "wh40_batt"
 TYPE_WN20_BATT = "wn20_batt"
+TYPE_WN38_BATT = "wn38_batt"
 TYPE_WH25_BATT = "wh25_batt"
 TYPE_WH26_BATT = "wh26_batt"
 TYPE_WH80_BATT = "wh80_batt"
@@ -312,6 +313,7 @@ TYPE_WH69_SIGNAL = "wh69_signal"
 TYPE_WH68_SIGNAL = "wh68_signal"
 TYPE_WH40_SIGNAL = "wh40_signal"
 TYPE_WN20_SIGNAL = "wn20_signal"
+TYPE_WN38_SIGNAL = "wn38_signal"
 TYPE_WH25_SIGNAL = "wh25_signal"
 TYPE_WH26_SIGNAL = "wh26_signal"
 TYPE_WH80_SIGNAL = "wh80_signal"
@@ -428,6 +430,7 @@ TYPE_WH69_RSSI = "wh69_rssi"
 TYPE_WH68_RSSI = "wh68_rssi"
 TYPE_WH40_RSSI = "wh40_rssi"
 TYPE_WN20_RSSI = "wn20_rssi"
+TYPE_WN38_RSSI = "wn38_rssi"
 TYPE_WH25_RSSI = "wh25_rssi"
 TYPE_WH26_RSSI = "wh26_rssi"
 TYPE_WH80_RSSI = "wh80_rssi"
@@ -703,6 +706,7 @@ class MultiSensorInfo:
         TYPE_WH68_SIGNAL : {"dev_type": "Wind Sensor","name":"Wind Sensor Signal","data_type":WittiotDataTypes.SIGNAL},
         TYPE_WH40_SIGNAL : {"dev_type": "Rainfall Sensor","name":"Rainfall Sensor Signal","data_type":WittiotDataTypes.SIGNAL},
         TYPE_WN20_SIGNAL : {"dev_type": "Rain Gauge Mini","name":"Rain Gauge Mini Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_WN38_SIGNAL : {"dev_type": "BGT Sensor","name":"BGT Sensor Signal","data_type":WittiotDataTypes.SIGNAL},
         TYPE_WH25_SIGNAL : {"dev_type": "T&RH&P Sensor","name":"T&RH&P Sensor Signal","data_type":WittiotDataTypes.SIGNAL},
         TYPE_WH26_SIGNAL : {"dev_type": "Outdoor T&RH Sensor","name":"Outdoor T&RH Sensor Signal","data_type":WittiotDataTypes.SIGNAL},
         TYPE_WH80_SIGNAL : {"dev_type": "Sonic Array","name":"Sonic Array Signal","data_type":WittiotDataTypes.SIGNAL},
@@ -767,6 +771,7 @@ class MultiSensorInfo:
         TYPE_WH68_RSSI : {"dev_type": "Wind Sensor","name":"Wind Sensor Rssi","data_type":WittiotDataTypes.RSSI},
         TYPE_WH40_RSSI : {"dev_type": "Rainfall Sensor","name":"Rainfall Sensor Rssi","data_type":WittiotDataTypes.RSSI},
         TYPE_WN20_RSSI : {"dev_type": "Rain Gauge Mini","name":"Rain Gauge Mini Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_WN38_RSSI : {"dev_type": "BGT Sensor","name":"BGT Sensor Rssi","data_type":WittiotDataTypes.RSSI},
         TYPE_WH25_RSSI : {"dev_type": "T&RH&P Sensor","name":"T&RH&P Sensor Rssi","data_type":WittiotDataTypes.RSSI},
         TYPE_WH26_RSSI : {"dev_type": "Outdoor T&RH Sensor","name":"Outdoor T&RH Sensor Rssi","data_type":WittiotDataTypes.RSSI},
         TYPE_WH80_RSSI : {"dev_type": "Sonic Array","name":"Sonic Array Rssi","data_type":WittiotDataTypes.RSSI},
@@ -831,6 +836,7 @@ class MultiSensorInfo:
         TYPE_WH68_BATT : {"dev_type": "Wind Sensor","name":"Wind Sensor Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_WH40_BATT : {"dev_type": "Rainfall Sensor","name":"Rainfall Sensor Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_WN20_BATT : {"dev_type": "Rain Gauge Mini","name":"Rain Gauge Mini Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_WN38_BATT : {"dev_type": "BGT Sensor","name":"BGT Sensor Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_WH25_BATT : {"dev_type": "T&RH&P Sensor","name":"T&RH&P Sensor Battery","data_type":WittiotDataTypes.BATTERY_BINARY},
         TYPE_WH26_BATT : {"dev_type": "Outdoor T&RH Sensor","name":"Outdoor T&RH Sensor Battery","data_type":WittiotDataTypes.BATTERY_BINARY},
         TYPE_WH80_BATT : {"dev_type": "Sonic Array","name":"Sonic Array Battery","data_type":WittiotDataTypes.BATTERY},
@@ -2276,6 +2282,7 @@ class API:
             "wh68_rssi":ld_sen_rssi[1],
             "wh40_rssi":ld_sen_rssi[3],
             "wn20_rssi":ld_sen_rssi[70],
+            "wn38_rssi":ld_sen_rssi[71],
             "wh25_rssi":ld_sen_rssi[4],
             "wh26_rssi":ld_sen_rssi[5],
             "wh80_rssi":ld_sen_rssi[2],
@@ -2339,6 +2346,7 @@ class API:
             "wh68_signal":ld_sen_signal[1],
             "wh40_signal":ld_sen_signal[3],
             "wn20_signal":ld_sen_signal[70],
+            "wn38_signal":ld_sen_signal[71],
             "wh25_signal":ld_sen_signal[4],
             "wh26_signal":ld_sen_signal[5],
             "wh80_signal":ld_sen_signal[2],
@@ -2403,6 +2411,7 @@ class API:
             "wh68_batt":self.val_tobattery(ld_sen_batt[1],"","1"),
             "wh40_batt":self.val_tobattery(ld_sen_batt[3],"","1"),
             "wn20_batt":self.val_tobattery(ld_sen_batt[70],"","1"),
+            "wn38_batt":self.val_tobattery(ld_sen_batt[71],"","1"),
             "wh25_batt":self.val_tobattery_binary_mk2(ld_sen_batt[4]),
             "wh26_batt":self.val_tobattery_binary_mk2(ld_sen_batt[5]),
             "wh80_batt":self.val_tobattery(ld_sen_batt[2],"","1"),
