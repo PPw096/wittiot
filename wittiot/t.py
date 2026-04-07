@@ -73,7 +73,7 @@ def table_print(data: dict) -> str:
 async def main() -> None:
     async with ClientSession() as session:
         try:
-            api = API("192.168.1.126", session=session)
+            api = API("192.168.1.135", session=session)
             res = await api._request_loc_allinfo()
             # authtoken=99be59a1bd105ed5
             # log=stdout

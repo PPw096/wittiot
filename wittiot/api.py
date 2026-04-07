@@ -902,12 +902,14 @@ class API:
         api_version: int = DEFAULT_API_VERSION,
         logger: logging.Logger = LOGGER,
         session: Optional[ClientSession] = None,
+        sensor_pagination: Optional[bool] = None,
     ) -> None:
         """Initialize."""
         self._ip: str = ip
         self._api_version: int = api_version
         self._logger = logger
         self._session: Optional[ClientSession] = session
+        self._sensor_pagination: Optional[bool] = sensor_pagination
         
         self.unit_temp = 0
         self._last_firmware_update_info: Optional[Dict[str, Any]] = None
@@ -1108,6 +1110,55 @@ class API:
     async def _request_loc_batt2(self) -> List[Dict[str, Any]]:
         url = f"http://{self._ip}/{GW11268_API_SENID_2}"
         return await self._request_data(url)
+
+    async def _request_loc_sensors_page(self, page: int) -> List[Dict[str, Any]]:
+        url = f"http://{self._ip}/get_sensors_info?page={page}"
+        return await self._request_data(url)
+
+    async def _request_loc_sensors_all(
+        self,
+        version_info: Optional[Union[Dict[str, Any], List[Dict[str, Any]]]] = None,
+        max_pages: int = 10,
+    ) -> List[Dict[str, Any]]:
+        pages_val = None
+        if version_info is not None:
+            pages_val = self._deep_find_first(version_info, ("sensorid_page",))
+        try:
+            pages = int(pages_val) if pages_val is not None else None
+        except (TypeError, ValueError):
+            pages = None
+
+        results_map: Dict[int, Dict[str, Any]] = {}
+        if self._sensor_pagination is False:
+            total_pages = 2
+        elif pages and pages > 0:
+            total_pages = pages
+        else:
+            total_pages = max_pages
+        unknown_pages = pages is None
+        for p in range(1, total_pages + 1):
+            try:
+                page_items = await self._request_loc_sensors_page(p)
+            except RequestError as err:
+                self._logger.debug("get_sensors_info page %s error: %s", p, err)
+                break
+            if not page_items:
+                if unknown_pages:
+                    break
+                continue
+            for item in page_items:
+                t = item.get("type")
+                if isinstance(t, str):
+                    try:
+                        t = int(t)
+                    except ValueError:
+                        t = None
+                if not isinstance(t, int):
+                    continue
+                results_map[t] = item
+        results = list(results_map.values())
+        results.sort(key=lambda x: int(x.get("type", 0)) if isinstance(x.get("type"), (int, str)) else 0)
+        return results
 
     async def _request_loc_data(self) -> List[Dict[str, Any]]:
         url = f"http://{self._ip}/{GW11268_API_LIVEDATA}"
@@ -1690,8 +1741,7 @@ class API:
         res_data = await self._request_loc_data()
         res_info = await self._request_loc_info()
         res_unit = await self._request_loc_unit()
-        res_batt1 = await self._request_loc_batt1()
-        res_batt2 = await self._request_loc_batt2()
+        res_batt_all = await self._request_loc_sensors_all(res_info)
         res_sys = await self._request_loc_sys()
         res_mac = await self._request_loc_mac()
         
@@ -1976,30 +2026,23 @@ class API:
             ld_sen_rssi.append("--")
             ld_sen_signal.append("--")
 
-
-        for index in range(len(res_batt1)):
-            ch=int(res_batt1[index]["type"])
-            if res_batt1[index]["id"] == "FFFFFFFF" or res_batt1[index]["id"] == "FFFFFFFE":
+        for index in range(len(res_batt_all)):
+            ch = res_batt_all[index].get("type")
+            if isinstance(ch, str):
+                try:
+                    ch = int(ch)
+                except ValueError:
+                    continue
+            if not isinstance(ch, int):
+                continue
+            if res_batt_all[index]["id"] == "FFFFFFFF" or res_batt_all[index]["id"] == "FFFFFFFE":
                 ld_sen_batt[ch]  ="--"
                 ld_sen_rssi[ch]  ="--"
                 ld_sen_signal[ch]="--"
             else:
-                ld_sen_batt[ch]  =res_batt1[index]["batt"]
-                ld_sen_rssi[ch]  =res_batt1[index].get("rssi", "--")
-                ld_sen_signal[ch]=res_batt1[index].get("signal", "--")
-           
-            
-
-        for index in range(len(res_batt2)):
-            ch=int(res_batt2[index]["type"])
-            if res_batt2[index]["id"] == "FFFFFFFF" or res_batt2[index]["id"] == "FFFFFFFE":
-                ld_sen_batt[ch]  ="--"
-                ld_sen_rssi[ch]  ="--"
-                ld_sen_signal[ch]="--"
-            else:
-                ld_sen_batt[ch]  =res_batt2[index]["batt"]
-                ld_sen_rssi[ch]  =res_batt2[index].get("rssi", "--")
-                ld_sen_signal[ch]=res_batt2[index].get("signal", "--")
+                ld_sen_batt[ch]  = res_batt_all[index].get("batt", "--")
+                ld_sen_rssi[ch]  = res_batt_all[index].get("rssi", "--")
+                ld_sen_signal[ch]= res_batt_all[index].get("signal", "--")
 
 
         ver=res_info["version"][9:]
