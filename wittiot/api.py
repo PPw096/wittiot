@@ -253,6 +253,7 @@ TYPE_WH26_BATT = "wh26_batt"
 TYPE_WH80_BATT = "wh80_batt"
 TYPE_WH57_BATT = "wh57_batt"
 TYPE_WH45_BATT = "wh45_batt"
+TYPE_WB64_BATT = "wb64_batt"
 
 
 TYPE_PM25CH1_SIGNAL = "pm25_ch1_signal"
@@ -319,6 +320,7 @@ TYPE_WH26_SIGNAL = "wh26_signal"
 TYPE_WH80_SIGNAL = "wh80_signal"
 TYPE_WH57_SIGNAL = "wh57_signal"
 TYPE_WH45_SIGNAL = "wh45_signal"
+TYPE_WB64_SIGNAL = "wb64_signal"
 
 TYPE_ECCH1 = "ec_ch1"
 TYPE_ECCH2 = "ec_ch2"
@@ -436,6 +438,7 @@ TYPE_WH26_RSSI = "wh26_rssi"
 TYPE_WH80_RSSI = "wh80_rssi"
 TYPE_WH57_RSSI = "wh57_rssi"
 TYPE_WH45_RSSI = "wh45_rssi"
+TYPE_WB64_RSSI = "wb64_rssi"
 
 iotMap = {
 		   1: 'WFC01',
@@ -712,6 +715,7 @@ class MultiSensorInfo:
         TYPE_WH80_SIGNAL : {"dev_type": "Sonic Array","name":"Sonic Array Signal","data_type":WittiotDataTypes.SIGNAL},
         TYPE_WH57_SIGNAL : {"dev_type": "Lightning Sensor","name":"Lightning Sensor Signal","data_type":WittiotDataTypes.SIGNAL},
         TYPE_WH45_SIGNAL : {"dev_type": "AQI Combo Sensor","name":"AQI Combo Sensor Signal","data_type":WittiotDataTypes.SIGNAL},
+        TYPE_WB64_SIGNAL : {"dev_type": "WB64","name":"WB64 Signal","data_type":WittiotDataTypes.SIGNAL},
         
         TYPE_PM25CH1_RSSI : {"dev_type": "CH1 PM25","name":"PM2.5 Rssi CH1","data_type":WittiotDataTypes.RSSI},
         TYPE_PM25CH2_RSSI : {"dev_type": "CH2 PM25","name":"PM2.5 Rssi CH2","data_type":WittiotDataTypes.RSSI},
@@ -777,6 +781,7 @@ class MultiSensorInfo:
         TYPE_WH80_RSSI : {"dev_type": "Sonic Array","name":"Sonic Array Rssi","data_type":WittiotDataTypes.RSSI},
         TYPE_WH57_RSSI : {"dev_type": "Lightning Sensor","name":"Lightning Sensor Rssi","data_type":WittiotDataTypes.RSSI},
         TYPE_WH45_RSSI : {"dev_type": "AQI Combo Sensor","name":"AQI Combo Sensor Rssi","data_type":WittiotDataTypes.RSSI},
+        TYPE_WB64_RSSI : {"dev_type": "WB64","name":"WB64 Rssi","data_type":WittiotDataTypes.RSSI},
         
         TYPE_PM25CH1_BATT : {"dev_type": "CH1 PM25","name":"PM2.5 Battery CH1","data_type":WittiotDataTypes.BATTERY},
         TYPE_PM25CH2_BATT : {"dev_type": "CH2 PM25","name":"PM2.5 Battery CH2","data_type":WittiotDataTypes.BATTERY},
@@ -842,6 +847,7 @@ class MultiSensorInfo:
         TYPE_WH80_BATT : {"dev_type": "Sonic Array","name":"Sonic Array Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_WH57_BATT : {"dev_type": "Lightning Sensor","name":"Lightning Sensor Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_WH45_BATT : {"dev_type": "AQI Combo Sensor","name":"AQI Combo Sensor Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_WB64_BATT : {"dev_type": "WB64","name":"WB64 Battery","data_type":WittiotDataTypes.BATTERY},
         TYPE_ECCH1 : {"dev_type": "CH1 EC","name":"Soil EC CH1","data_type":WittiotDataTypes.EC},
         TYPE_ECCH2 : {"dev_type": "CH2 EC","name":"Soil EC CH2","data_type":WittiotDataTypes.EC},
         TYPE_ECCH3 : {"dev_type": "CH3 EC","name":"Soil EC CH3","data_type":WittiotDataTypes.EC},
@@ -2331,6 +2337,7 @@ class API:
             "wh80_rssi":ld_sen_rssi[2],
             "wh57_rssi":ld_sen_rssi[26],
             "wh45_rssi":ld_sen_rssi[39],
+            "wb64_rssi":ld_sen_rssi[73],
             "pm25_ch1_signal":ld_sen_signal[22],
             "pm25_ch2_signal":ld_sen_signal[23],
             "pm25_ch3_signal":ld_sen_signal[24],
@@ -2395,6 +2402,7 @@ class API:
             "wh80_signal":ld_sen_signal[2],
             "wh57_signal":ld_sen_signal[26],
             "wh45_signal":ld_sen_signal[39],
+            "wb64_signal":ld_sen_signal[73],
             # "allbatt":ld_sen_batt,
             "pm25_ch1_batt":self.val_tobattery(ld_sen_batt[22],"","1"),
             "pm25_ch2_batt":self.val_tobattery(ld_sen_batt[23],"","1"),
@@ -2460,6 +2468,7 @@ class API:
             "wh80_batt":self.val_tobattery(ld_sen_batt[2],"","1"),
             "wh57_batt":self.val_tobattery(ld_sen_batt[26],"","1"),
             "wh45_batt":self.val_tobattery(ld_sen_batt[39],"","1"),
+            "wb64_batt":self.val_tobattery(ld_sen_batt[73],"","1"),
             
             "iot_list": res_iotlist
         }
