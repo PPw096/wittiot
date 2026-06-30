@@ -561,6 +561,11 @@ class WittiotDataTypes(enum.Enum):
     MOISTURE = 13
 
 
+class DurationUnit(str, enum.Enum):
+    SECONDS = "s"
+    MINUTES = "min"
+
+
 
 class MultiSensorInfo:
     """Multi Sensor Info."""
@@ -1070,9 +1075,10 @@ class API:
                 self._logger.debug(f"更新设备状态失败: {err}")
         return commands
         
-    async def switch_iotdevice(self,_iot_id,_iot_model,_iot_switch):
+    async def switch_iotdevice(self,_iot_id,_iot_model,_iot_switch,duration=0,duration_unit=DurationUnit.SECONDS):
         # {"command":[{"on_type":0,"off_type":0,"always_on":1,"on_time":0,"off_time":0,"val_type":1,"val":0,"cmd":"quick_run","id":1753,"model":1}]}
         # {"command":[{"cmd":"quick_stop","id":1753,"model":1}]}
+        duration = int(duration or 0)
         if _iot_switch == 0:
             cmd = {
                     "cmd": "quick_stop",
@@ -1080,12 +1086,21 @@ class API:
                     "model": _iot_model
             }
         else:
+            if duration > 0:
+                unit = DurationUnit(duration_unit)
+                always_on = 0
+                val_type = 0 if unit is DurationUnit.SECONDS else 1
+                val = duration
+            else:
+                always_on = 1
+                val_type = 1
+                val = 0
             if _iot_model == 3:
                 cmd = {
                     "position":100,
-                    "always_on":1,
-                    "val_type":1,
-                    "val":0,
+                    "always_on":always_on,
+                    "val_type":val_type,
+                    "val":val,
                     "cmd":"quick_run",
                     "id": _iot_id,
                     "model": _iot_model
@@ -1094,11 +1109,11 @@ class API:
                 cmd = {
                     "on_type":0,
                     "off_type":0,
-                    "always_on":1,
+                    "always_on":always_on,
                     "on_time":0,
                     "off_time":0,
-                    "val_type":1,
-                    "val":0,
+                    "val_type":val_type,
+                    "val":val,
                     "cmd":"quick_run",
                     "id": _iot_id,
                     "model": _iot_model
