@@ -561,6 +561,11 @@ class WittiotDataTypes(enum.Enum):
     MOISTURE = 13
 
 
+class DurationUnit(str, enum.Enum):
+    """Duration unit for timed quick run."""
+    SECONDS = "s"
+    MINUTES = "min"
+
 
 class MultiSensorInfo:
     """Multi Sensor Info."""
@@ -898,6 +903,96 @@ class MultiSensorInfo:
         TYPE_ECCH16_HUMI : {"dev_type": "CH16 EC","name":"Soil EC Humidity CH16","data_type":WittiotDataTypes.MOISTURE},
     }
 
+    # 名称前缀 → translation_key 映射
+    # 按名称前缀长度降序排列（长前缀优先匹配）
+    TRANSLATION_KEY_RULES = [
+        # PM2.5 系列
+        ("PM2.5 24H AQI CH", "pm25_24h_aqi"),
+        ("PM2.5 AQI CH", "pm25_aqi"),
+        ("24H Avg PM2.5 CH", "pm25_24h"),
+        ("PM2.5 CH", "pm25"),
+        ("PM2.5 Battery CH", "pm25_batt"),
+        ("PM2.5 Signal CH", "pm25_signal"),
+        ("PM2.5 Rssi CH", "pm25_rssi"),
+        # LEAK 系列
+        ("LEAK Battery CH", "leak_batt"),
+        ("LEAK Signal CH", "leak_signal"),
+        ("LEAK Rssi CH", "leak_rssi"),
+        ("LEAK CH", "leak"),
+        # T&H 系列
+        ("T&H Humidity CH", "tandh_humidity"),
+        ("T&H Temp CH", "tandh_temp"),
+        ("T&H Battery CH", "tandh_batt"),
+        ("T&H Signal CH", "tandh_signal"),
+        ("T&H Rssi CH", "tandh_rssi"),
+        # Soil 系列
+        ("Soil EC Temp CH", "ec_temp"),
+        ("Soil EC Humidity CH", "ec_humidity"),
+        ("Soil EC CH", "ec"),
+        ("Soil Battery CH", "soil_batt"),
+        ("Soil Signal CH", "soil_signal"),
+        ("Soil Rssi CH", "soil_rssi"),
+        ("Soil CH", "soil"),
+        # Temp only 系列
+        ("Temp Battery CH", "temp_batt"),
+        ("Temp Signal CH", "temp_signal"),
+        ("Temp Rssi CH", "temp_rssi"),
+        ("Temp CH", "temp_only"),
+        # Leaf 系列
+        ("Leaf Battery CH", "leaf_batt"),
+        ("Leaf Signal CH", "leaf_signal"),
+        ("Leaf Rssi CH", "leaf_rssi"),
+        ("Leaf CH", "leaf"),
+        # LDS 系列
+        ("LDS Heater-on Counter CH", "lds_heat"),
+        ("LDS Total Height CH", "lds_height"),
+        ("LDS Depth CH", "lds_depth"),
+        ("LDS Air CH", "lds_air"),
+        ("LDS Battery CH", "lds_batt"),
+        ("LDS Signal CH", "lds_signal"),
+        ("LDS Rssi CH", "lds_rssi"),
+        # 主设备信号/RSSI/电池（无channel）
+        ("Haptic 3-in-1 Signal", "wh85_signal"),
+        ("Haptic Array Signal", "wh90_signal"),
+        ("Sensor Array Signal", "wh69_signal"),
+        ("Wind Sensor Signal", "wh68_signal"),
+        ("Rainfall Sensor Signal", "wh40_signal"),
+        ("Rain Gauge Mini Signal", "wn20_signal"),
+        ("BGT Sensor Signal", "wn38_signal"),
+        ("T&RH&P Sensor Signal", "wh25_signal"),
+        ("Outdoor T&RH Sensor Signal", "wh26_signal"),
+        ("Sonic Array Signal", "wh80_signal"),
+        ("Lightning Sensor Signal", "wh57_signal"),
+        ("AQI Combo Sensor Signal", "wh45_signal"),
+        ("WB64 Signal", "wb64_signal"),
+        ("Haptic 3-in-1 Rssi", "wh85_rssi"),
+        ("Haptic Array Rssi", "wh90_rssi"),
+        ("Sensor Array Rssi", "wh69_rssi"),
+        ("Wind Sensor Rssi", "wh68_rssi"),
+        ("Rainfall Sensor Rssi", "wh40_rssi"),
+        ("Rain Gauge Mini Rssi", "wn20_rssi"),
+        ("BGT Sensor Rssi", "wn38_rssi"),
+        ("T&RH&P Sensor Rssi", "wh25_rssi"),
+        ("Outdoor T&RH Sensor Rssi", "wh26_rssi"),
+        ("Sonic Array Rssi", "wh80_rssi"),
+        ("Lightning Sensor Rssi", "wh57_rssi"),
+        ("AQI Combo Sensor Rssi", "wh45_rssi"),
+        ("WB64 Rssi", "wb64_rssi"),
+        ("Haptic 3-in-1 Battery", "wh85_batt"),
+        ("Haptic Array Battery", "wh90_batt"),
+        ("Sensor Array Battery", "wh69_batt"),
+        ("Wind Sensor Battery", "wh68_batt"),
+        ("Rainfall Sensor Battery", "wh40_batt"),
+        ("Rain Gauge Mini Battery", "wn20_batt"),
+        ("BGT Sensor Battery", "wn38_batt"),
+        ("T&RH&P Sensor Battery", "wh25_batt"),
+        ("Outdoor T&RH Sensor Battery", "wh26_batt"),
+        ("Sonic Array Battery", "wh80_batt"),
+        ("Lightning Sensor Battery", "wh57_batt"),
+        ("AQI Combo Sensor Battery", "wh45_batt"),
+        ("WB64 Battery", "wb64_batt"),
+    ]
+
 
 class API:
     """Define the API object."""
@@ -921,8 +1016,24 @@ class API:
         self._last_firmware_update_info: Optional[Dict[str, Any]] = None
         # Per-instance copy of sensor info to avoid cross-gateway name pollution (#68)
         self.sensor_info: dict[str, dict[str, Any]] = {
-            k: dict(v) for k, v in MultiSensorInfo.SENSOR_INFO.items()
+            k: {
+                **dict(v),
+                "translation_key": self._derive_subdev_translation_key(v["name"]),
+            }
+            for k, v in MultiSensorInfo.SENSOR_INFO.items()
         }
+
+    @staticmethod
+    def _derive_subdev_translation_key(name: str) -> str:
+        """根据传感器名称推导出翻译键值."""
+        for prefix, key in MultiSensorInfo.TRANSLATION_KEY_RULES:
+            if name.startswith(prefix):
+                return key
+        # 预处理 srain_piezo 特殊名称
+        if name.startswith("Rain Status"):
+            return "piezo_rain_status"
+        # 兜底：使用 name 本身
+        return name.lower().replace(" ", "_").replace(".", "").replace("-", "_")
 
     def replace_title_bsr(self,res_data,val1,val2,ch,index):
         key_name = f"{val1}{ch+1}"
@@ -931,14 +1042,18 @@ class API:
         key_name_rssi = f"{key_name}_rssi"
         if key_name_batt in self.sensor_info:
             self.sensor_info[key_name_batt]["name"] = res_data[val2][index]["name"]+" Battery"
+            self.sensor_info[key_name_batt]["custom_name"] = True
         if key_name_signal in self.sensor_info:
             self.sensor_info[key_name_signal]["name"] = res_data[val2][index]["name"]+" Signal"
+            self.sensor_info[key_name_signal]["custom_name"] = True
         if key_name_rssi in self.sensor_info:
             self.sensor_info[key_name_rssi]["name"] = res_data[val2][index]["name"]+" RSSI"
+            self.sensor_info[key_name_rssi]["custom_name"] = True
     def replace_title(self,res_data,val1,val2,ch,index,add_name=""):
         key_name = f"{val1}{ch+1}"
         if key_name in self.sensor_info:
             self.sensor_info[key_name]["name"] = res_data[val2][index]["name"] + add_name
+            self.sensor_info[key_name]["custom_name"] = True
         
     def is_valid_float(self,val):
         try:
@@ -1070,9 +1185,10 @@ class API:
                 self._logger.debug(f"更新设备状态失败: {err}")
         return commands
         
-    async def switch_iotdevice(self,_iot_id,_iot_model,_iot_switch):
+    async def switch_iotdevice(self,_iot_id,_iot_model,_iot_switch,duration=0,duration_unit=DurationUnit.SECONDS):
         # {"command":[{"on_type":0,"off_type":0,"always_on":1,"on_time":0,"off_time":0,"val_type":1,"val":0,"cmd":"quick_run","id":1753,"model":1}]}
         # {"command":[{"cmd":"quick_stop","id":1753,"model":1}]}
+        duration = int(duration or 0)
         if _iot_switch == 0:
             cmd = {
                     "cmd": "quick_stop",
@@ -1080,12 +1196,21 @@ class API:
                     "model": _iot_model
             }
         else:
+            if duration > 0:
+                unit = DurationUnit(duration_unit)
+                always_on = 0
+                val_type = 0 if unit is DurationUnit.SECONDS else 1
+                val = duration
+            else:
+                always_on = 1
+                val_type = 1
+                val = 0
             if _iot_model == 3:
                 cmd = {
                     "position":100,
-                    "always_on":1,
-                    "val_type":1,
-                    "val":0,
+                    "always_on":always_on,
+                    "val_type":val_type,
+                    "val":val,
                     "cmd":"quick_run",
                     "id": _iot_id,
                     "model": _iot_model
@@ -1094,11 +1219,11 @@ class API:
                 cmd = {
                     "on_type":0,
                     "off_type":0,
-                    "always_on":1,
+                    "always_on":always_on,
                     "on_time":0,
                     "off_time":0,
-                    "val_type":1,
-                    "val":0,
+                    "val_type":val_type,
+                    "val":val,
                     "cmd":"quick_run",
                     "id": _iot_id,
                     "model": _iot_model
