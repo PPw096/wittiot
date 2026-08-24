@@ -440,6 +440,19 @@ TYPE_WH57_RSSI = "wh57_rssi"
 TYPE_WH45_RSSI = "wh45_rssi"
 TYPE_WB64_RSSI = "wb64_rssi"
 
+TYPE_WQT01 = "wqt01"
+TYPE_WQT01_EC = "wqt01_ec"
+TYPE_WQT01_TEMP = "wqt01_temp"
+TYPE_WQT01_TOC = "wqt01_toc"
+TYPE_WQT01_TURB = "wqt01_turb"
+TYPE_WQT01_COD = "wqt01_cod"
+TYPE_WQT01_TDS = "wqt01_tds"
+TYPE_WQT01_CO2 = "wqt01_co2"
+TYPE_WQT01_STAT = "wqt01_stat"
+TYPE_WQT01_BATT = "wqt01_batt"
+TYPE_WQT01_RSSI = "wqt01_rssi"
+TYPE_WQT01_SIGNAL = "wqt01_signal"
+
 iotMap = {
 		   1: 'WFC01',
 		   2: 'AC1100',
@@ -559,6 +572,12 @@ class WittiotDataTypes(enum.Enum):
     RSSI = 11
     EC = 12
     MOISTURE = 13
+    TOC = 14
+    TURB = 15
+    COD = 16
+    TDS = 17
+    CO2 = 18
+    STATUS = 19
 
 
 class DurationUnit(str, enum.Enum):
@@ -901,6 +920,17 @@ class MultiSensorInfo:
         TYPE_ECCH14_HUMI : {"dev_type": "CH14 EC","name":"Soil EC Humidity CH14","data_type":WittiotDataTypes.MOISTURE},   
         TYPE_ECCH15_HUMI : {"dev_type": "CH15 EC","name":"Soil EC Humidity CH15","data_type":WittiotDataTypes.MOISTURE},
         TYPE_ECCH16_HUMI : {"dev_type": "CH16 EC","name":"Soil EC Humidity CH16","data_type":WittiotDataTypes.MOISTURE},
+        TYPE_WQT01_EC : {"dev_type": "WQT01","name":"WQT01 EC","data_type":WittiotDataTypes.EC},
+        TYPE_WQT01_TEMP : {"dev_type": "WQT01","name":"WQT01 Temperature","data_type":WittiotDataTypes.TEMPERATURE},
+        TYPE_WQT01_TOC : {"dev_type": "WQT01","name":"WQT01 TOC","data_type":WittiotDataTypes.TOC},
+        TYPE_WQT01_TURB : {"dev_type": "WQT01","name":"WQT01 Turbidity","data_type":WittiotDataTypes.TURB},
+        TYPE_WQT01_COD : {"dev_type": "WQT01","name":"WQT01 COD","data_type":WittiotDataTypes.COD},
+        TYPE_WQT01_TDS : {"dev_type": "WQT01","name":"WQT01 TDS","data_type":WittiotDataTypes.TDS},
+        TYPE_WQT01_CO2 : {"dev_type": "WQT01","name":"WQT01 CO2","data_type":WittiotDataTypes.CO2},
+        TYPE_WQT01_STAT : {"dev_type": "WQT01","name":"WQT01 Status","data_type":WittiotDataTypes.STATUS},
+        TYPE_WQT01_BATT : {"dev_type": "WQT01","name":"WQT01 Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_WQT01_RSSI : {"dev_type": "WQT01","name":"WQT01 RSSI","data_type":WittiotDataTypes.RSSI},
+        TYPE_WQT01_SIGNAL : {"dev_type": "WQT01","name":"WQT01 Signal","data_type":WittiotDataTypes.SIGNAL},
     }
 
     # 名称前缀 → translation_key 映射
@@ -1061,6 +1091,20 @@ class API:
             return True 
         except (ValueError, TypeError):  # 捕获无效转换 
             return False 
+    def wqt01_num(self,val):
+        """从 WQT01 带单位的字符串（如 '1999 uS/cm'、'10.0 NTU'）中提取数值."""
+        if val is None:
+            return None
+        text = str(val).strip()
+        if text in ("", "--", "---", "----", "--.-", "---.-", "--.--", "None", "N/A"):
+            return None
+        m = re.match(r"^([-+]?\d+(?:\.\d+)?)", text)
+        if not m:
+            return None
+        try:
+            return float(m.group(1))
+        except ValueError:
+            return None
     async def _request_data(
         self, 
         url: str,
@@ -2061,6 +2105,7 @@ class API:
         ld_ecch=[]
         ld_ec_tempch=[]
         ld_ec_humich=[]
+        ld_wqt01=[]
         for i in range(16):
             ld_soil.append("--")
             ld_tempch.append("--")
@@ -2156,6 +2201,28 @@ class API:
                     self.replace_title(res_data,"ec_ch","ch_ec",ch,index)
                     self.replace_title_bsr(res_data,"Soilmoisture_ch","ch_ec",ch,index)
 
+        if TYPE_WQT01 in res_data:
+            for index in range(len(res_data[TYPE_WQT01])):
+                item = res_data[TYPE_WQT01][index]
+                wqt = {}
+                # 测量字段原样透传（保留单位）
+                for key in ("ec", "temp", "toc", "turb", "cod", "tds", "unit"):
+                    if key in item and str(item[key]).strip() not in ("", "--", "---", "----", "--.-", "---.-", "--.--", "None"):
+                        wqt[key] = item[key]
+                # CO2 键兼容大小写
+                co2_key = "CO2" if "CO2" in item else ("co2" if "co2" in item else None)
+                if co2_key and str(item[co2_key]).strip() not in ("", "--", "---", "----", "--.-", "---.-", "--.--", "None"):
+                    wqt["CO2"] = item[co2_key]
+                # 合并 stat / stat1 / stat2 三个状态字段为一个
+                stats = []
+                for skey in ("stat", "stat1", "stat2"):
+                    if skey in item and str(item[skey]).strip() not in ("", "--", "---", "----", "None"):
+                        stats.append(str(item[skey]).strip())
+                if stats:
+                    wqt["stat"] = ", ".join(stats)
+                if wqt:
+                    ld_wqt01.append(wqt)
+
         ld_sen_batt=[]
         ld_sen_rssi  =[]
         ld_sen_signal=[]
@@ -2181,6 +2248,16 @@ class API:
                 ld_sen_batt[ch]  = res_batt_all[index].get("batt", "--")
                 ld_sen_rssi[ch]  = res_batt_all[index].get("rssi", "--")
                 ld_sen_signal[ch]= res_batt_all[index].get("signal", "--")
+
+        # WQT01 电池/信号/RSSI：传感器类型索引 72，附加到 wqt01 列表项
+        for wqt in ld_wqt01:
+            wqt_batt = self.val_tobattery(ld_sen_batt[72], "", "1")
+            if str(wqt_batt).strip() not in ("", "--", "---", "----", "--.-", "---.-", "--.--", "None"):
+                wqt["batt"] = wqt_batt
+            if str(ld_sen_rssi[72]).strip() not in ("", "--", "---", "----", "--.-", "---.-", "--.--", "None"):
+                wqt["rssi"] = ld_sen_rssi[72]
+            if str(ld_sen_signal[72]).strip() not in ("", "--", "---", "----", "--.-", "---.-", "--.--", "None"):
+                wqt["signal"] = ld_sen_signal[72]
 
 
         ver=res_info["version"][9:]
@@ -2604,6 +2681,33 @@ class API:
             
             "iot_list": res_iotlist
         }
+        # WQT01 水质参数展开为顶层扁平键（与 LDS 等子传感器一致，挂载主设备显示）。
+        # 网关传感器类型索引 72 为单槽位，仅支持第一台 WQT01。
+        if ld_wqt01:
+            wqt_item = ld_wqt01[0]
+            for fkey, dkey in (
+                ("ec", TYPE_WQT01_EC),
+                ("toc", TYPE_WQT01_TOC),
+                ("turb", TYPE_WQT01_TURB),
+                ("cod", TYPE_WQT01_COD),
+                ("tds", TYPE_WQT01_TDS),
+                ("CO2", TYPE_WQT01_CO2),
+            ):
+                num = self.wqt01_num(wqt_item.get(fkey))
+                if num is not None:
+                    resjson[dkey] = num
+            if "temp" in wqt_item:
+                t = self.wqt01_num(wqt_item["temp"])
+                if t is not None:
+                    resjson[TYPE_WQT01_TEMP] = self.locval_totemp(str(t), self.unit_temp)
+            if wqt_item.get("stat"):
+                resjson[TYPE_WQT01_STAT] = wqt_item["stat"]
+            if wqt_item.get("batt"):
+                resjson[TYPE_WQT01_BATT] = wqt_item["batt"]
+            if wqt_item.get("rssi"):
+                resjson[TYPE_WQT01_RSSI] = wqt_item["rssi"]
+            if wqt_item.get("signal"):
+                resjson[TYPE_WQT01_SIGNAL] = wqt_item["signal"]
         # hex_str = format(255, 'X')
         # 删除值为指定字符串的键值对
         keys_to_remove = [key for key, val in list(resjson.items()) if val in ["None", "--","---", "----", "", "--.-", "---.-", "--.--",None, []]]
