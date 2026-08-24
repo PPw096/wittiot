@@ -928,7 +928,7 @@ class MultiSensorInfo:
         TYPE_WQT01_TDS : {"dev_type": "WQT01","name":"WQT01 TDS","data_type":WittiotDataTypes.TDS},
         TYPE_WQT01_CO2 : {"dev_type": "WQT01","name":"WQT01 CO2","data_type":WittiotDataTypes.CO2},
         TYPE_WQT01_STAT : {"dev_type": "WQT01","name":"WQT01 Status","data_type":WittiotDataTypes.STATUS},
-        TYPE_WQT01_BATT : {"dev_type": "WQT01","name":"WQT01 Battery","data_type":WittiotDataTypes.BATTERY},
+        TYPE_WQT01_BATT : {"dev_type": "WQT01","name":"WQT01 Battery","data_type":WittiotDataTypes.BATTERY_BINARY},
         TYPE_WQT01_RSSI : {"dev_type": "WQT01","name":"WQT01 RSSI","data_type":WittiotDataTypes.RSSI},
         TYPE_WQT01_SIGNAL : {"dev_type": "WQT01","name":"WQT01 Signal","data_type":WittiotDataTypes.SIGNAL},
     }
@@ -2250,8 +2250,9 @@ class API:
                 ld_sen_signal[ch]= res_batt_all[index].get("signal", "--")
 
         # WQT01 电池/信号/RSSI：传感器类型索引 72，附加到 wqt01 列表项
+        # 电量为二进制（Normal/Low），与 wh69/wh25 等一致
         for wqt in ld_wqt01:
-            wqt_batt = self.val_tobattery(ld_sen_batt[72], "", "1")
+            wqt_batt = self.val_tobattery_binary_mk2(ld_sen_batt[72])
             if str(wqt_batt).strip() not in ("", "--", "---", "----", "--.-", "---.-", "--.--", "None"):
                 wqt["batt"] = wqt_batt
             if str(ld_sen_rssi[72]).strip() not in ("", "--", "---", "----", "--.-", "---.-", "--.--", "None"):
